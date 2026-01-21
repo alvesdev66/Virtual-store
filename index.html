@@ -39,9 +39,9 @@
         }
 
         .logo {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 16px;
             color: #eb3a75;
+            margin-left: 10px;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -132,6 +132,7 @@
             transition: color 0.3s ease;
             position: relative;
         }
+
         /* Toggle Mobile */
         .hamburger {
             display: none;
@@ -225,76 +226,103 @@
 
 <body>
     <header>
-    <!-- BARRA DE NAVEGAÇÃO -->
-    <nav>
-        <div class="nav-container">
-            <!-- Logo -->
-            <a href="#" class="logo">
-                JUVELE - Moda Feminina
-            </a>
+        <!-- BARRA DE NAVEGAÇÃO -->
+        <nav>
+            <div class="nav-container">
+                <!-- Logo -->
+                <a href="#" class="logo">
+                    JUVELE - Moda Feminina
+                </a>
 
-            <!-- Menu Principal -->
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Início</a>
-                </li>
+                <!-- Menu Principal -->
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Início</a>
+                    </li>
 
-                <!-- Menu com Submenu -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        Produtos <i class="fas fa-chevron-down dropdown-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li class="submenu-item">
-                            <a href="#" class="submenu-link">Vestidos</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="#" class="submenu-link"> Blusas</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="#" class="submenu-link"> Calças</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="#" class="submenu-link"> Sapatos</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="#" class="submenu-link"> Acessórios</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="#" class="submenu-link"> Promoções</a>
-                        </li>
-                    </ul>
-                </li>
+                    <!-- Menu com Submenu -->
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            Produtos <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link">Vestidos</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Blusas</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Calças</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Sapatos</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Acessórios</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Promoções</a>
+                            </li>
+                        </ul>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Sobre</a>
-                </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Sobre</a>
+                    </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Contato</a>
-                </li>
-            </ul>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Contato</a>
+                    </li>
+                </ul>
 
 
 
-            <!-- Hambúrguer Menu -->
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+                <!-- Hambúrguer Menu -->
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+        <!-- BARRA DE PESQUISA -->
+        <div class="barra-de-pesquisa-totalidade">
+            <div class="caixa-de-pesquisa">
+                <span class="icon-pesquisa"><i class="fas fa-search"></i></span>
+                <input type="search" placeholder="Estou buscando...">
             </div>
         </div>
-    </nav>
-<!-- BARRA DE PESQUISA -->
-  <div class="barra-de-pesquisa-totalidade">
-         <div class="caixa-de-pesquisa">
-            <span class="icon-pesquisa"><i class="fas fa-search"></i></span>
-            <input type="search" placeholder="Estou buscando...">
+        <!-- LOGO EMPRESA-->
+        <div class="logo-empresa"
+            style="display: flex; justify-content: center; width: 100px; height: 100px; margin: 20px auto; border-radius: 30px; overflow: hidden;">
+            <img id="logo-img" src="./recursos/identidade/logo.jpg" alt="Logo da Empresa/Loja">
+        </div>
+        <!-- Dominio/Nome DA EMPRESA-->
+        <div class="nome-da-empresa">
+            <h1 style="text-align: center; font-size: 35px; color: #3f3f3f; font-weight: bold;">Juvele.com.br <!-- Icone de verificação--> <img src="./recursos/icones/verified.svg" alt="icone-de-empresa-vefiricada" style="width: 23px; height: 23px; vertical-align: middle;"></h1>
+        </div>
+        <!-- BIOGRAFIA DA EMPRESA -->
+         <div class="bio-da-empresa">
+            <p style=" text-align: center; font-size: 16px; color: #5a5a5a; margin: 10px auto; max-width: 400px;">
+               Seja MUITOO Bem vinda à nossa <strong><mark>Loja virtual</mark></strong>. Novidades toda semana! 🤍
+            </p>   
          </div>
-      </div>
     </header>
     <!-- Script -->
     <script>
+        // Carregar configurações de personalização
+        fetch('./data/personalizacao.json')
+            .then(response => response.json())
+            .then(data => {
+                const logoConfig = data.find(item => item.op === 'controle-sobre-logo');
+                if (logoConfig && logoConfig.zoom) {
+                    const logoImg = document.getElementById('logo-img');
+                    logoImg.style.transform = `scale(${logoConfig.zoom})`;
+                }
+            })
+            .catch(error => console.error('Erro ao carregar personalização:', error));
+
         // Selecionar elementos
         const hamburger = document.querySelector('.hamburger');
         const navMenu = document.querySelector('.nav-menu');
