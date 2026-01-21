@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juvele - Moda Feminina</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Navbar */
+        nav {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e91e63;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo:hover {
+            color: #c2185b;
+        }
+
+        /* Menu Principal */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 5px;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-link:hover {
+            color: #e91e63;
+        }
+
+        /* Submenu de Produtos */
+        .submenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            list-style: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 220px;
+            margin-top: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .submenu-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .submenu-item:last-child {
+            border-bottom: none;
+        }
+
+        .submenu-item:hover {
+            background-color: #fce4ec;
+            padding-left: 25px;
+        }
+
+        .submenu-link {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        .submenu-link:hover {
+            color: #e91e63;
+        }
+
+        /* Ícone de submenu */
+        .dropdown-icon {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.active .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Ícones de carrinho e usuário */
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-icon {
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-icon:hover {
+            color: #e91e63;
+        }
+
+        /* Toggle Mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-container {
+                height: 60px;
+                padding: 0 15px;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(8px, 8px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 60px;
+                flex-direction: column;
+                background-color: #fff;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                gap: 0;
+                padding: 20px 0;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-item {
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 15px 20px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            /* Submenu Mobile */
+            .submenu {
+                position: static;
+                display: none;
+                box-shadow: none;
+                background-color: #f9f9f9;
+                border-radius: 0;
+                min-width: unset;
+                margin-top: 0;
+                animation: none;
+            }
+
+            .submenu-item {
+                padding: 10px 20px;
+                padding-left: 40px;
+            }
+
+            .submenu.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-container">
+            <!-- Logo -->
+            <a href="#" class="logo">
+                JUVELE - Moda Feminina
+            </a>
+
+            <!-- Menu Principal -->
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Início</a>
+                </li>
+
+                <!-- Menu com Submenu -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        Produtos <i class="fas fa-chevron-down dropdown-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="#" class="submenu-link"><i class="fas fa-heart"></i> Vestidos</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="#" class="submenu-link"><i class="fas fa-shirt"></i> Blusas</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="#" class="submenu-link"><i class="fas fa-pants"></i> Calças</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="#" class="submenu-link"><i class="fas fa-shoe-prints"></i> Sapatos</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="#" class="submenu-link"><i class="fas fa-ring"></i> Acessórios</a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="#" class="submenu-link"><i class="fas fa-coat-slash"></i> Promoções</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Sobre</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Contato</a>
+                </li>
+            </ul>
+
+
+
+            <!-- Hambúrguer Menu -->
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Script -->
+    <script>
+        // Selecionar elementos
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const navItems = document.querySelectorAll('.nav-item');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // Toggle Menu Mobile
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Abrir/fechar submenu ao clicar
+        navItems.forEach(item => {
+            const link = item.querySelector('.nav-link');
+            const submenu = item.querySelector('.submenu');
+
+            if (submenu) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    // Fechar outros submenus
+                    navItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                            const otherSubmenu = otherItem.querySelector('.submenu');
+                            if (otherSubmenu) {
+                                otherSubmenu.classList.remove('active');
+                            }
+                        }
+                    });
+
+                    // Toggle do submenu atual
+                    item.classList.toggle('active');
+                    submenu.classList.toggle('active');
+                });
+            }
+        });
+
+        // Fechar menu ao clicar em um link sem submenu
+        navLinks.forEach(link => {
+            if (!link.querySelector('.dropdown-icon')) {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            }
+        });
+
+        // Fechar ao clicar em item do submenu
+        document.querySelectorAll('.submenu-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    const submenu = item.querySelector('.submenu');
+                    if (submenu) submenu.classList.remove('active');
+                });
+            });
+        });
+
+        // Fechar menu ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('nav')) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    const submenu = item.querySelector('.submenu');
+                    if (submenu) submenu.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
