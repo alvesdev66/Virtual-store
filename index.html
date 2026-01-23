@@ -19,6 +19,7 @@
             font-family: Arial, Helvetica, sans-serif;
             background-color: #f5f5f5;
             transition: overflow 0.3s ease;
+            margin-top: 60px;
         }
 
         body.menu-open {
@@ -56,8 +57,10 @@
         nav {
             background-color: #e22a8c;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 1000;
         }
 
@@ -463,7 +466,7 @@
         <div id="text-animator"
             style="text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center;">
             <h2
-                style="font-size: 15px; font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; margin-left: 20px;">
+                style="font-size: 18px; font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 340px;">
                 {{ textoAnimado }}<span class="cursor-blink"
                     style="animation: blink 0.7s infinite; display: inline-block; width: 2px; height: 1em; background-color: #e22a8c; margin-left: 4px; vertical-align: middle;"></span>
             </h2>
@@ -814,11 +817,18 @@
 
                 const parcelamento = produto.parcelamento;
                 let textoParcelamento = '';
-                if (parcelamento && parcelamento['sem-juros-ate'] > 0) {
-                    const valorParcela = (parseFloat(precoFinal) / parcelamento['sem-juros-ate']).toFixed(2);
-                    textoParcelamento = `<div class="produto-parcelamento">
-                        <span class="parcelas-count">${parcelamento['sem-juros-ate']} x</span> de R$ ${formatarPreco(valorParcela)} <span class="parcelas-info">sem juros</span>
-                    </div>`;
+                if (parcelamento) {
+                    if (parcelamento['sem-juros-ate'] > 0) {
+                        const valorParcela = (parseFloat(precoFinal) / parcelamento['sem-juros-ate']).toFixed(2);
+                        textoParcelamento = `<div class="produto-parcelamento">
+                            <span class="parcelas-count">${parcelamento['sem-juros-ate']} x</span> de R$ ${formatarPreco(valorParcela)} <span class="parcelas-info">sem juros</span>
+                        </div>`;
+                    } else if (parcelamento['parcelado-em-ate'] > 0) {
+                        const valorParcela = (parseFloat(precoFinal) / parcelamento['parcelado-em-ate']).toFixed(2);
+                        textoParcelamento = `<div class="produto-parcelamento">
+                            em até <span class="parcelas-count">${parcelamento['parcelado-em-ate']} x</span> de R$ ${formatarPreco(valorParcela)}
+                        </div>`;
+                    }
                 }
 
                 const statusHtml = !produto.disponibilidade ?
