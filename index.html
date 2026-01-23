@@ -7,6 +7,7 @@
     <title>Juvele - Moda Feminina</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./recursos/css/Barra-de-pesquisa.css">
+    <link rel="stylesheet" href="./estilos-para-card-de-produtos.css">
     <style>
         * {
             margin: 0;
@@ -440,9 +441,23 @@
         <div class="metricas-instagram">
             <p><strong>10,4 Mil</strong> Seguidores</p>
             <p><strong>+500</strong> produtos</p>
+        </div>
     </header>
-    <hr style="margin-top: 25px;">
-    <!-- CATEGORIAS -->
+    <hr style="margin-top: 25px; margin-bottom: -14px;">
+
+    <!-- SEÇÃO DE PRODUTOS -->
+    <main>
+        <section class="produtos-destaque">
+            <h2 style="text-align: center; font-size: 18px; font-weight: 400;">"Ei, vem dar uma olhadinha... 👀"</h2>
+            <div id="produtosContainer" class="produtos-container">
+                <!-- Cards serão gerados aqui pelo JavaScript -->
+            </div>
+            <div id="produtosErro" hidden style="text-align: center; padding: 40px; color: #999;">
+                Não foi possível carregar os produtos. Tente novamente.
+            </div>
+        </section>
+    </main>
+
     <!-- Script -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script>
@@ -665,6 +680,129 @@
 
             setInterval(rotate, intervalo);
         })();
+
+        // ===== GERADOR DE PRODUTOS (Simplificado e Otimizado) =====
+
+        let produtosCarregados = [];
+
+        // Formata preço para Real brasileiro
+        function formatarPreco(preco) {
+            return parseFloat(preco).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Calcula preço com desconto
+        function calcularPrecoComDesconto(preco, desconto) {
+            if (!desconto) return preco;
+            return (parseFloat(preco) * (1 - desconto / 100)).toFixed(2);
+        }
+
+        // Renderiza os cards de produtos
+        function renderizarProdutos(produtos) {
+            const container = document.getElementById('produtosContainer');
+            const erroDiv = document.getElementById('produtosErro');
+
+            if (!produtos || produtos.length === 0) {
+                container.innerHTML = '';
+                erroDiv.hidden = false;
+                return;
+            }
+
+            erroDiv.hidden = true;
+            container.innerHTML = produtos.map(produto => {
+                const precoFinal = calcularPrecoComDesconto(produto.preco, produto.desconto);
+                const precoFormatado = formatarPreco(precoFinal);
+                const precoOriginal = formatarPreco(produto.preco);
+
+                const parcelamento = produto.parcelamento;
+                let textoParcelamento = '';
+                if (parcelamento && parcelamento['sem-juros-ate'] > 0) {
+                    const valorParcela = (parseFloat(precoFinal) / parcelamento['sem-juros-ate']).toFixed(2);
+                    textoParcelamento = `<div class="produto-parcelamento">
+                        <span class="parcelas-count">${parcelamento['sem-juros-ate']} x</span> de R$ ${formatarPreco(valorParcela)} <span class="parcelas-info">sem juros</span>
+                    </div>`;
+                }
+
+                const statusHtml = !produto.disponibilidade ?
+                    '<div class="produto-status esgotado">ESGOTADO</div>' :
+                    '';
+
+                return `
+                    <div class="produto-card" data-id="${produto.id}">
+                        <div class="produto-imagem-wrapper">
+                            <img src="${produto.imagem}" alt="${produto.nome}" 
+                                class="produto-imagem" 
+                                onerror="this.src='https://via.placeholder.com/300x400?text=Produto'">
+                            ${produto.cores && produto.cores.length > 0 && produto.disponibilidade ?
+                        `<div class="produto-cores-badge">
+                                    <span class="circle-color-rainbow"></span>
+                                    ${produto.cores.length}
+                                </div>` : ''}
+                        </div>
+                        <div class="produto-info">
+                            <div>
+                                <h3 class="produto-nome">${produto.nome}</h3>
+                                <div class="produto-descricao-pequena">${produto.descricao.substring(0, 80)}...</div>
+                            </div>
+                            <div>
+                                ${produto.desconto ? `<span class="desconto-badge">${produto.desconto}% OFF</span>` : ''}
+                                <div class="produto-preco-wrapper">
+                                    ${produto.desconto ? `<div class="produto-preco-original">R$ ${precoOriginal}</div>` : ''}
+                                    <span class="produto-preco-atual">R$ ${precoFormatado}</span>
+                                </div>
+                                ${textoParcelamento}
+                                ${statusHtml}
+                            </div>
+                            
+                            <button class="produto-botao" onclick="adicionarAoCarrinho(${produto.id})" 
+                                ${!produto.disponibilidade ? 'disabled' : ''}>
+                                Ver detalhes
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Embaralha um array (Fisher-Yates)
+        function embaralharArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Carrega produtos do JSON
+        async function carregarProdutos() {
+            try {
+                const response = await fetch('./data/toupeira.json');
+                if (!response.ok) throw new Error('Erro ao carregar produtos');
+
+                let produtos = await response.json();
+                produtosCarregados = embaralharArray(produtos);
+
+                // Seleciona até 26 produtos em destaque (aleatoriamente)
+                const destaque = produtosCarregados.slice(0, Math.min(26, produtosCarregados.length));
+                renderizarProdutos(destaque);
+            } catch (erro) {
+                console.error('Erro ao carregar produtos:', erro);
+                document.getElementById('produtosErro').hidden = false;
+            }
+        }
+
+        // Adicionar ao carrinho
+        function adicionarAoCarrinho(produtoId) {
+            const produto = produtosCarregados.find(p => p.id === produtoId);
+            if (produto) {
+                alert(`✓ "${produto.nome}" foi adicionado ao carrinho!`);
+            }
+        }
+
+        // Carregar produtos ao iniciar
+        document.addEventListener('DOMContentLoaded', carregarProdutos);
     </script>
 </body>
 

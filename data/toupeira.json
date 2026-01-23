@@ -1,0 +1,852 @@
+[
+    {
+        "id": 1,
+        "nome": "Vestido Longo Rosê com Mangas Fluídas e Cinto Revestido",
+        "descricao": "Encante-se com a delicadeza do nosso Vestido Longo Rosê, uma peça que traduz sofisticação através de cortes precisos e um caimento impecável. Projetado para valorizar a silhueta feminina com suavidade, este vestido é sinônimo de charme e bom gosto.",
+        "preco": "189.90",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/695820d79b581-Captura_de_tela_2025-12-29_101351_F382HwSga.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695820d79b581-Captura_de_tela_2025-12-29_101351_F382HwSga.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695820d95f6cb-Captura_de_tela_2025-12-29_101404_40nsk51xa.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695820da96583-Captura_de_tela_2025-12-29_101425_j1xkoelje.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Formal",
+            "Festivo",
+            "Romântico"
+        ],
+        "desconto": 10,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Rosa Pastel",
+            "Rosê Suave"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 10,
+            "sem-juros-ate": 3
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 2,
+        "nome": "Bolsa Satchel New Classic com Fecho de Encaixe e Alça de Mão",
+        "descricao": "A nossa Bolsa Satchel New Classic é o acessório definitivo para a mulher moderna que não abre mão da praticidade aliada ao estilo atemporal. Com um design estruturado e acabamento refinado, ela é compacta por fora e espaçosa para o essencial, sendo a companhia perfeita do escritório ao jantar especial.",
+        "preco": "89.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/6958226a7526e-Captura_de_tela_2025-12-29_102723_31VvGLhxd.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958226a7526e-Captura_de_tela_2025-12-29_102723_31VvGLhxd.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958226c8bc9e-Captura_de_tela_2025-12-29_102743_o_1C5opUJ.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Bolsa",
+            "Acessório"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "U"
+        ],
+        "cores": [
+            "Preto",
+            "Marrom Café",
+            "Bege Fredi"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 5,
+            "sem-juros-ate": 2
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 3,
+        "nome": "Blusa Crepe Elegance com Gola Ruffled e Detalhe em Babados",
+        "descricao": "A nossa Blusa em Crepe é aquele item essencial que une a delicadeza dos detalhes românticos a um corte moderno e limpo. Com um caimento leve que não marca, ela é a escolha ideal para quem busca estar bem vestida com o mínimo de esforço.",
+        "preco": "90.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/6958235477ece-Captura_de_tela_2025-12-29_103144_3FjrtP-Xf.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958235477ece-Captura_de_tela_2025-12-29_103144_3FjrtP-Xf.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Blusa",
+            "Casual"
+        ],
+        "desconto": 10,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Branco",
+            "Verde Oliva",
+            "Bege Rosado"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 3,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 3
+    },
+    {
+        "id": 4,
+        "nome": "Vestido Midi Tropical Garden com Decote Quadrado e Mangas Fluídas",
+        "descricao": "O nosso Vestido Tropical Garden é uma verdadeira obra de arte em forma de peça de roupa. Com uma estampa floral vibrante e um corte que prioriza o conforto sem perder a sofisticação, este modelo é perfeito para eventos ao ar livre, passeios de final de semana ou até um encontro casual que pede um toque extra de estilo.",
+        "preco": "120.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/695823d0e92ec-Captura_de_tela_2025-12-29_102959_I5cmn1z5l.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695823d0e92ec-Captura_de_tela_2025-12-29_102959_I5cmn1z5l.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695823d27c09a-Captura_de_tela_2025-12-29_103012_lHcAKvBEm.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Midi",
+            "Moderno"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Floral"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 5,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 5,
+        "nome": "Bolsa Baguete Textured com Alça Trançada e Fecho Geométrico",
+        "descricao": "A nossa Bolsa Baguete Textured redefine o conceito de acessório indispensável. Combinando a praticidade do formato compacto com a tendência das texturas manuais, esta peça foi desenvolvida para mulheres que buscam um toque de personalidade e modernidade em seus looks diários.",
+        "preco": "140.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/695826b5e9d70-Captura_de_tela_2025-12-29_102808_jkYBERoQx.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695826b5e9d70-Captura_de_tela_2025-12-29_102808_jkYBERoQx.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695826be89251-Captura_de_tela_2025-12-29_102824_5jcTRP95P.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Casual",
+            "Bolsa",
+            "Festa"
+        ],
+        "desconto": 2,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "U"
+        ],
+        "cores": [
+            "Preto",
+            "Bege",
+            "Prata Brilhante",
+            "Chumbo Metalizado"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 6,
+        "nome": "Vestido Lady Like com Estampa Floral de Contorno e Mangas Fluídas",
+        "descricao": "O nosso Vestido Lady Like combina uma modelagem clássica com detalhes contemporâneos para criar um visual leve e encantador. Com um caimento que valoriza a cintura e se abre em uma saia fluída, esta peça é a escolha certa para quem deseja elegância com um toque de doçura.",
+        "preco": "120.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/6958277d659a3-Captura_de_tela_2025-12-29_102546_SflhH3IStA.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958277d659a3-Captura_de_tela_2025-12-29_102546_SflhH3IStA.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Floral"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Coral",
+            "Pêssego",
+            "Azul Bebê"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 7,
+        "nome": "Saia Jeans Midi com Bordado Lateral e Barra Desfiada",
+        "descricao": "Nossa Saia Jeans Midi é uma peça indispensável para quem busca versatilidade e elegância em uma única peça. Com uma modelagem que valoriza as curvas femininas de forma discreta, ela se destaca pelos detalhes artesanais que elevam o denim tradicional a um novo nível de sofisticação.",
+        "preco": "80.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/6958291fa536a-Captura_de_tela_2025-12-29_102604_Yl4iqam09.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958291fa536a-Captura_de_tela_2025-12-29_102604_Yl4iqam09.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695829215674b-Captura_de_tela_2025-12-29_102617_to9EUSbujV.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Casul",
+            "Saia",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "M",
+            "P",
+            "G"
+        ],
+        "cores": [
+            "Jeans"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 8,
+        "nome": "Cinto Fino Minimalista com Fivela Ferradura Dourada",
+        "descricao": "O nosso Cinto Fino Minimalista é o acessório indispensável para quem busca um toque de refinamento discreto. Com um design \"clean\" e atemporal, ele é perfeito para marcar a cintura em peças fluidas ou para finalizar looks de alfaiataria com extrema elegância.",
+        "preco": "55.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69582a8504de9-Captura_de_tela_2025-12-29_102641_uWBOBuH5c.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582a8504de9-Captura_de_tela_2025-12-29_102641_uWBOBuH5c.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582a868c78d-Captura_de_tela_2025-12-29_102652_xDnpiEthh.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Cinto"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "U"
+        ],
+        "cores": [
+            "Preto",
+            "Off-White"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 9,
+        "nome": "Vestido Midi em Tricô Modal com Ombro Único e Detalhe de Nó",
+        "descricao": "Eleve o seu estilo com o nosso Vestido Midi em Tricô, uma peça que redefine a elegância contemporânea. Com uma trama trabalhada que valoriza a textura do tecido, este vestido oferece um ajuste impecável que contorna a silhueta com suavidade e conforto.",
+        "preco": "170.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69582b161a936-Captura_de_tela_2025-12-29_101127_ixcUD_keT.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582b161a936-Captura_de_tela_2025-12-29_101127_ixcUD_keT.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582b1870a4f-Captura_de_tela_2025-12-29_101142_oEpRTWwPL.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Verde oliva"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 1
+    },
+    {
+        "id": 10,
+        "nome": "Macacão Jeans Pantalona Soft com Amarração Frontal e Alças Médias",
+        "descricao": "O nosso Macacão Jeans Pantalona é a união ideal entre o frescor do denim leve e o design sofisticado da alfaiataria feminina. Com uma modelagem que valoriza a silhueta de forma fluida, esta peça oferece praticidade e estilo em um único passo.",
+        "preco": "230.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69582cbe43ea9-Captura_de_tela_2025-12-29_102055_HbisOdYUd.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582cbe43ea9-Captura_de_tela_2025-12-29_102055_HbisOdYUd.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582cbf96ab1-Captura_de_tela_2025-12-29_102106_CKS3xB1A7.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582cc0e3e84-Captura_de_tela_2025-12-29_102119_DqAuiDdChJ.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Macacão",
+            "Jeans"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Jeans"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 11,
+        "nome": "Calça Pantalona em Sarja Soft Off-White com Modelagem Wide Leg",
+        "descricao": "A nossa Calça Pantalona Off-White une a sofisticação da alfaiataria com o conforto da sarja leve. Com um corte impecável que alonga a silhueta, esta peça é a base perfeita para produções que vão do \"casual chic\" ao ambiente corporativo com total naturalidade.",
+        "preco": "180.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69582d2b76538-Captura_de_tela_2025-12-29_101928_P7wANMPQ6.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582d2b76538-Captura_de_tela_2025-12-29_101928_P7wANMPQ6.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Calça",
+            "Moderno"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "G"
+        ],
+        "cores": [],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 12,
+        "nome": "Saia Jeans Lápis com Abotoamento Frontal e Bolsos Utilitários",
+        "descricao": "Eleve seu visual casual com a nossa Saia Jeans de Cintura Alta, uma peça que une a praticidade do estilo utilitário com a elegância da modelagem lápis. Projetada para esculpir a silhueta, esta saia se destaca pelos detalhes em metal e pelos bolsos estratégicos que trazem um ar contemporâneo ao denim clássico.",
+        "preco": "230.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69582dca7bc81-Captura_de_tela_2025-12-29_103220_iUGzJoYiF.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582dca7bc81-Captura_de_tela_2025-12-29_103220_iUGzJoYiF.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "jeans",
+            "Saia"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "U"
+        ],
+        "cores": [
+            "Jeans"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 5,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 1
+    },
+    {
+        "id": 13,
+        "nome": "Vestido Curto em Linho com Estampa Floral Geométrica e Barra em Babado",
+        "descricao": "O nosso Vestido Floral Geometric une a sofisticação natural do tecido com aparência de linho a uma estampa vibrante e exclusiva. Com uma modelagem que equilibra estrutura e fluidez, esta peça é a escolha ideal para quem não abre mão de estar bem vestida com frescor e conforto.",
+        "preco": "240.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69582e654f063-Captura_de_tela_2025-12-29_103157_n4D7TusbHT.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582e654f063-Captura_de_tela_2025-12-29_103157_n4D7TusbHT.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Midi"
+        ],
+        "desconto": 20,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "G",
+            "M"
+        ],
+        "cores": [
+            "Floral"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 14,
+        "nome": "Saia Midi em Sarja Soft com Bolsos Utilitários e Fenda Frontal",
+        "descricao": "A nossa Saia Midi em Sarja é a definição de sofisticação descomplicada. Com um design que equilibra perfeitamente o corte clássico da alfaiataria com detalhes utilitários modernos, esta peça foi desenvolvida para oferecer conforto e estilo durante todo o dia.",
+        "preco": "250.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69582f0320c84-Captura_de_tela_2025-12-29_102208_v5pIXyWkM.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582f0320c84-Captura_de_tela_2025-12-29_102208_v5pIXyWkM.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69582f045364b-Captura_de_tela_2025-12-29_102222_0OZscL_HUa.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Saia",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Lavanda"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 5,
+            "sem-juros-ate": 2
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 15,
+        "nome": "Vestido Midi Floral em Linho com Decote Quadrado e Barra com Babado",
+        "descricao": "O nosso Vestido Midi Floral é uma celebração da leveza e do estilo atemporal. Confeccionado em um tecido com toque de linho, ele apresenta uma estampa botânica marcante em tons de verde e ocre, projetada para destacar a sua elegância natural com um frescor inigualável.",
+        "preco": "210.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/6958305685230-Captura_de_tela_2025-12-29_100707_zMsl4p15b.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958305685230-Captura_de_tela_2025-12-29_100707_zMsl4p15b.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695830807616f-Captura_de_tela_2025-12-29_100644_409IOTZdr.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958307f30d72-Captura_de_tela_2025-12-29_100657_AcQe09_we.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583089932df-Captura_de_tela_2025-12-29_100836_dUezaoU9v.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583088789c3-Captura_de_tela_2025-12-29_100854_RYSJx6z9X.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Saia",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Vermelho",
+            "Verde Oliva"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 16,
+        "nome": "Bolsa Satchel Estruturada com Alça de Mão e Fecho de Encaixe",
+        "descricao": "A nossa Bolsa Satchel Classic é o acessório indispensável para compor looks que vão do escritório ao lazer com extrema elegância. Com um design rígido e minimalista, ela oferece o equilíbrio perfeito entre sofisticação e praticidade, mantendo seus itens organizados e seguros.",
+        "preco": "190.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/6958323b07ebb-Captura_de_tela_2025-12-29_103056_kAUVnMZRkW.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/6958323b07ebb-Captura_de_tela_2025-12-29_103056_kAUVnMZRkW.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Bolsa"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "U"
+        ],
+        "cores": [
+            "Off-White",
+            "Marrom"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 17,
+        "nome": "Vestido Girassol de Noite - Elegância em cada detalhe",
+        "descricao": "Sabe aquele vestido que te deixa pronta para qualquer ocasião em 5 minutos? É esse! O mix de cores clássicas e o detalhe dos babados na barra trazem uma leveza única. Seja para o trabalho ou para um jantar, ele garante um visual polido e cheio de personalidade.",
+        "preco": "180.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/695836d1b738c-Captura_de_tela_2025-12-29_102949_NPPue1SFX.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695836d1b738c-Captura_de_tela_2025-12-29_102949_NPPue1SFX.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [],
+        "cores": [
+            "Preto"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 18,
+        "nome": "Vestido Midi Linho Nature com Cinto e Mangas Bufantes",
+        "descricao": "O minimalismo nunca foi tão charmoso. Este vestido midi em tom off-white/bege areia traz a estética natural que está em alta, unindo a estrutura do design clássico com a leveza necessária para os dias quentes.",
+        "preco": "260.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/695837b37541a-Captura_de_tela_2025-12-29_101820_zC7N3OrLY.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695837b37541a-Captura_de_tela_2025-12-29_101820_zC7N3OrLY.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695838547f539-Captura_de_tela_2025-12-29_100937_7JMbu6eAj.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Romântico"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 19,
+        "nome": "Vestido Midi Turquesa Serene - Corte Alfaiataria",
+        "descricao": "Leveza e sofisticação em uma única peça. Este vestido midi na cor azul turquesa é a escolha perfeita para quem busca um visual impecável do trabalho ao jantar especial.",
+        "preco": "340.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/695838d901936-Captura_de_tela_2025-12-29_100726_lsjS_DToy.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695838d901936-Captura_de_tela_2025-12-29_100726_lsjS_DToy.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 1
+    },
+    {
+        "id": 20,
+        "nome": "Conjunto Midi Passion - Blusa e Saia com Fenda",
+        "descricao": "Sinta-se poderosa e confortável com o nosso Conjunto Passion. Na cor vermelha vibrante, este duo é ideal para eventos festivos, passeios ou até mesmo para elevar o look do dia a dia com muita personalidade.",
+        "preco": "150.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69583acfb73f3-Captura_de_tela_2025-12-29_101456_O84x6ITw-.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583acfb73f3-Captura_de_tela_2025-12-29_101456_O84x6ITw-.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583ad15e9cd-Captura_de_tela_2025-12-29_101508_5Ra5XSTC1.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Conjunto",
+            "Saia",
+            "Blusa"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Vermelho"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 1
+    },
+    {
+        "id": 21,
+        "nome": "Vestido Longo Royal Garden - Decote em V e Saia Três Marias",
+        "descricao": "Encante-se com a vivacidade do azul royal neste modelo que combina romantismo e modernidade. A modelagem fluida proporciona um movimento incrível, ideal para registrar momentos especiais.",
+        "preco": "190.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69583c1e31dfb-Captura_de_tela_2025-12-29_102914_5qnX0Gtnj.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583c1e31dfb-Captura_de_tela_2025-12-29_102914_5qnX0Gtnj.webp",
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583c1f7ff0b-Captura_de_tela_2025-12-29_102924_72V6OOePS.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Longo"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Azul"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 22,
+        "nome": "Vestido Longo Mint Garden - Detalhe Bordado Orgânico",
+        "descricao": "Leveza e estilo em uma cor que é pura tendência! Nosso vestido longo verde menta destaca-se pelo detalhe frontal exclusivo em linhas brancas, trazendo um ar contemporâneo e artístico à peça.",
+        "preco": "210.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69583cce780b6-Captura_de_tela_2025-12-29_101258_YSU1vXR9f.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583cce780b6-Captura_de_tela_2025-12-29_101258_YSU1vXR9f.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Longo"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Verde Menta"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 1
+    },
+    {
+        "id": 23,
+        "nome": "Vestido Midi Lady Like com Cinto e Botões - Elegância Atemporal",
+        "descricao": "Redefina o conceito de sofisticação com o nosso Vestido Midi Estilo Lady Like. Com uma modelagem inspirada no glamour clássico, esta peça é a união perfeita entre estrutura e feminilidade.",
+        "preco": "270.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69583da96282d-Captura_de_tela_2025-12-29_101158_neV5o3erf.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583da96282d-Captura_de_tela_2025-12-29_101158_neV5o3erf.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Vermelho",
+            "Verde Oliva"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 5,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 24,
+        "nome": "Vestido Longo Terra Doce - Romantismo com Toque Natural",
+        "descricao": "Aposte na tendência dos tons terrosos com o nosso Vestido Longo Terra Doce. Uma peça que transmite serenidade e elegância, ideal para quem ama detalhes delicados e um caimento fluido.",
+        "preco": "245.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69583e3f481ad-Captura_de_tela_2025-12-29_103037_REeALhEpg.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583e3f481ad-Captura_de_tela_2025-12-29_103037_REeALhEpg.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Casual",
+            "Longo"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Caramelo"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 6,
+            "sem-juros-ate": 2
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 25,
+        "nome": "Vestido Midi Canelado Soleil - Elegância Texturizada",
+        "descricao": "Ilumine seu guarda-roupa com o nosso Vestido Midi Soleil. Em um tom de amarelo suave e sofisticado, esta peça traz o equilíbrio perfeito entre o conforto do tecido canelado e um corte refinado que valoriza o corpo sem marcar excessivamente.",
+        "preco": "290.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69583f1bac4b3-Captura_de_tela_2025-12-29_100807_DNhhicbC0l.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583f1bac4b3-Captura_de_tela_2025-12-29_100807_DNhhicbC0l.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Midi",
+            "Vestido"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Amarelo Suave"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 7,
+            "sem-juros-ate": 4
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 26,
+        "nome": "O Look dos Sonhos: Vestido Midi Rosa Romantique",
+        "descricao": "Sabe aquele vestido que parece ter saído de um conto de fadas moderno? O nosso modelo Rosa Seco é a definição de feminilidade. Seja para um chá de revelação, um encontro romântico ou um evento diurno, ele garante que você se sinta linda, confiante e extremamente elegante.",
+        "preco": "320.00",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/69583fd0203a0-Captura_de_tela_2025-12-21_092352_AjwBg7MVZ.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/69583fd0203a0-Captura_de_tela_2025-12-21_092352_AjwBg7MVZ.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-02",
+        "tamanhos": [
+            "P",
+            "M",
+            "G"
+        ],
+        "cores": [
+            "Rosa"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 1,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 5
+    },
+    {
+        "id": 27,
+        "nome": "Vestido Midi Azul Royal",
+        "descricao": "Eleve o seu guarda-roupa com o nosso Vestido Midi Azul Royal, a peça perfeita para quem busca um visual sofisticado e, ao mesmo tempo, delicado. Com uma modelagem que valoriza a silhueta, este vestido destaca-se pelo decote coração com detalhe drapeado no busto, trazendo um toque extra de feminilidade. As mangas bufantes (estilo princesa) adicionam um charme retrô moderno, enquanto a saia fluida garante movimento e leveza a cada passo. Seja para um evento especial, um jantar ou uma celebração de fim de ano, este vestido é a definição de \"presença marcante\".",
+        "preco": "450.90",
+        "imagem": "https://ik.imagekit.io/8wd5xavoy/produtos/695f9921e2237-Captura_de_tela_2025-12-29_101236_nc-fbye1E.webp",
+        "imagens": [
+            "https://ik.imagekit.io/8wd5xavoy/produtos/695f9921e2237-Captura_de_tela_2025-12-29_101236_nc-fbye1E.webp"
+        ],
+        "destaque": true,
+        "categoria": [
+            "Vestido",
+            "Midi"
+        ],
+        "desconto": null,
+        "publicado-em": "2026-01-08",
+        "tamanhos": [
+            "M",
+            "G",
+            "P"
+        ],
+        "cores": [
+            "Azul"
+        ],
+        "disponibilidade": true,
+        "parcelamento": {
+            "parcelado-em-ate": 8,
+            "sem-juros-ate": 0
+        },
+        "max-de-pedido": 1
+    }
+]
