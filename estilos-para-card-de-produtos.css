@@ -2,7 +2,7 @@
 
 .produtos-destaque {
     max-width: 1200px;
-    margin: 30px auto;
+    margin: 10px auto;
     padding: 0 20px;
 }
 
@@ -226,7 +226,6 @@
     }
 
     .produtos-destaque {
-        margin: 30px auto;
         padding: 0 20px;
     }
 
@@ -256,7 +255,6 @@
     }
 
     .produtos-destaque {
-        margin: 30px auto;
         padding: 0 15px;
     }
 
@@ -322,7 +320,6 @@
     }
 
     .produtos-destaque {
-        margin: 30px auto;
         padding: 0 12px;
     }
 

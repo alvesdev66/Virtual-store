@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juvele - Moda Feminina</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
     <link rel="stylesheet" href="./recursos/css/Barra-de-pesquisa.css">
     <link rel="stylesheet" href="./estilos-para-card-de-produtos.css">
     <style>
@@ -146,8 +146,10 @@
 
         /* Ícone de submenu */
         .dropdown-icon {
-            font-size: 12px;
+            font-size: 18px;
             transition: transform 0.3s ease;
+            display: inline-block;
+            transform-origin: center;
         }
 
         .nav-item.active .dropdown-icon {
@@ -354,6 +356,12 @@
 </head>
 
 <body>
+    <!--SIM, EU SEI... PARECE ESTRANHO COLOCAR O VJUES
+    PARA CARREGAR AQUI. PORÉM ESSA FOI UMA BOA PRÁTICA
+    PARA EVITAR ATRASOS NO CARREGAMENTO DO FRAMEWORK 
+    MAIS IMPORTANTE DO SITE. E EVITA QUE APAREÇA "{{TEXTO ANIMADO}} "-->
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <!-- Overlay -->
     <div class="overlay"></div>
 
@@ -375,7 +383,7 @@
                     <!-- Menu com Submenu -->
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            Produtos <i class="fas fa-chevron-down dropdown-icon"></i>
+                            Produtos <i class="ri-arrow-down-s-line dropdown-icon"></i>
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item">
@@ -421,7 +429,7 @@
         <!-- BARRA DE PESQUISA -->
         <div class="barra-de-pesquisa-totalidade">
             <div class="caixa-de-pesquisa">
-                <span class="icon-pesquisa"><i class="fas fa-search"></i></span>
+                <span class="icon-pesquisa"><i class="ri-search-line"></i></span>
                 <input type="search" placeholder="Estou buscando...">
             </div>
         </div>
@@ -458,6 +466,13 @@
             <p><strong>10,4 Mil</strong> Seguidores</p>
             <p><strong>+500</strong> produtos</p>
         </div>
+        <div class="criptografia-desc">
+            <p style="text-align: center; font-size: 12px; max-width: 300px; margin: 20px auto; color: #878787;">
+                <i class="ri-key-fill"
+                    style="font-size: 16px; color: #568fd9; margin-right: 8px; vertical-align: middle;"></i>
+                Seus dados estão protegidos com criptografia de ponta a ponta dentro do site. <a href="#">Saiba mais</a>
+            </p>
+        </div>
     </header>
     <hr style="margin: 20px 0; border: none; border-top: 2px solid #ddd;">
 
@@ -466,9 +481,9 @@
         <div id="text-animator"
             style="text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center;">
             <h2
-                style="font-size: 18px; font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 340px;">
+                style="font-size: 14px; font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 400px;">
                 {{ textoAnimado }}<span class="cursor-blink"
-                    style="animation: blink 0.7s infinite; display: inline-block; width: 2px; height: 1em; background-color: #e22a8c; margin-left: 4px; vertical-align: middle;"></span>
+                    style="animation: blink 0.7s infinite; display: inline-block; width: 2px; height: 1em; background-color: #e22a8c; margin-left: 4px; vertical-align: middle; "></span>
             </h2>
         </div>
 
@@ -483,7 +498,7 @@
     </main>
 
     <!-- Script -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
     <script>
         // Vue app para controlar skeleton e zoom da logo
         const { createApp } = Vue;
@@ -643,7 +658,8 @@
 
         // Fechar menu ao clicar em um link sem submenu
         navLinks.forEach(link => {
-            if (!link.querySelector('.dropdown-icon')) {
+            const parentItem = link.closest('.nav-item');
+            if (parentItem && !parentItem.querySelector('.submenu')) {
                 link.addEventListener('click', () => {
                     hamburger.classList.remove('active');
                     navMenu.classList.remove('active');
