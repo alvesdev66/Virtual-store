@@ -599,11 +599,8 @@
                     textoAnimado: '',
                     frases: [
                         '"Ei, vem dar uma olhadinha... 👀"',
-                        '"Esses looks estão um ARRASO, vem ver!💕"',
-                        '"Temos o look perfeito para você! ✨"',
-                        '"Produtos e atendimento de alta qualidade para você!! 🛍️"',
-                        '"Aqui você encontra o melhor da moda feminina! 👗"',
-                        '"😮 NOOSSA, TEM TUDO A VER COM VOCÊ!"',
+                        '"🫢 Esses looks estão um ARRASO, vem ver!"',
+                        '"Temos o look perfeito para você! ✨"'
                     ],
                     indiceAtual: 0,
                     digitando: true,
@@ -918,8 +915,10 @@
                 return `
                     <div class="produto-card" data-id="${produto.id}">
                         <div class="produto-imagem-wrapper">
-                            <img src="${produto.imagem}" alt="${produto.nome}" 
+                            <img data-src="${produto.imagem}" alt="${produto.nome}" 
                                 class="produto-imagem" 
+                                loading="lazy"
+                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'%3E%3Crect fill='%23f0f0f0' width='300' height='400'/%3E%3C/svg%3E"
                                 onerror="this.src='https://via.placeholder.com/300x400?text=Produto'">
                             ${produto.cores && produto.cores.length > 0 && produto.disponibilidade ?
                         `<div class="produto-cores-badge">
@@ -987,8 +986,39 @@
             }
         }
 
+        // Lazy Loading de imagens
+        function iniciarLazyLoading() {
+            const imagens = document.querySelectorAll('.produto-imagem[data-src]');
+
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            observer.unobserve(img);
+                        }
+                    });
+                }, {
+                    rootMargin: '50px'
+                });
+
+                imagens.forEach(img => imageObserver.observe(img));
+            } else {
+                // Fallback para navegadores antigos
+                imagens.forEach(img => {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                });
+            }
+        }
+
         // Carregar produtos ao iniciar
-        document.addEventListener('DOMContentLoaded', carregarProdutos);
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarProdutos();
+            setTimeout(iniciarLazyLoading, 100);
+        });
     </script>
 
     <!-- Botão WhatsApp Fixo -->
