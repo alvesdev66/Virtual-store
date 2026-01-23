@@ -2,14 +2,14 @@
 
 .produtos-destaque {
     max-width: 1200px;
-    margin: 60px auto;
+    margin: 30px auto;
     padding: 0 20px;
 }
 
 /* CONTAINER DE PRODUTOS */
 .produtos-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 30px;
     animation: fadeIn 0.6s ease-in-out;
 }
@@ -30,6 +30,7 @@
 .produto-card {
     background: #ffffff;
     overflow: hidden;
+    border-radius: 12px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
@@ -201,11 +202,32 @@
 
 /* ===== RESPONSIVO ===== */
 
-/* Tablet (768px até 1024px) */
-@media (max-width: 1024px) {
+/* Telas Grandes (acima de 1200px) - 4 produtos por linha */
+@media (min-width: 1201px) {
     .produtos-container {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
+
+    .produto-nome {
+        font-size: 16px;
+    }
+
+    .produto-preco-atual {
+        font-size: 18px;
+    }
+}
+
+/* Telas Médias (768px até 1200px) - 3 produtos por linha */
+@media (max-width: 1200px) and (min-width: 768px) {
+    .produtos-container {
+        grid-template-columns: repeat(3, 1fr);
         gap: 24px;
+    }
+
+    .produtos-destaque {
+        margin: 30px auto;
+        padding: 0 20px;
     }
 
     .produtos-destaque h2 {
@@ -217,20 +239,24 @@
         font-size: 15px;
     }
 
+    .produto-descricao-pequena {
+        font-size: 12px;
+    }
+
     .produto-preco-atual {
         font-size: 16px;
     }
 }
 
-/* Mobile (até 767px) */
+/* Telas Pequenas (até 767px) - 2 produtos por linha */
 @media (max-width: 767px) {
     .produtos-container {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
 
     .produtos-destaque {
-        margin: 40px auto;
+        margin: 30px auto;
         padding: 0 15px;
     }
 
@@ -248,7 +274,7 @@
     }
 
     .produto-nome {
-        font-size: 13px;
+        font-size: 14px;
         margin-bottom: 4px;
     }
 
@@ -262,7 +288,7 @@
     }
 
     .produto-preco-atual {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .produto-botao {
@@ -274,6 +300,7 @@
     .desconto-badge {
         font-size: 10px;
         padding: 4px 8px;
+        margin-bottom: 6px;
     }
 
     .produto-cores-badge {
@@ -287,7 +314,7 @@
     }
 }
 
-/* Extra pequeno (até 480px) */
+/* Extra pequeno (até 480px) - 2 produtos por linha */
 @media (max-width: 480px) {
     .produtos-container {
         grid-template-columns: repeat(2, 1fr);
