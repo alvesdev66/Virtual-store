@@ -410,6 +410,33 @@
                 font-size: 28px;
             }
         }
+
+        /* Botão Ver Mais */
+        .btn-ver-mais {
+            display: block;
+            margin: 40px auto;
+            padding: 12px 40px;
+            background-color: #33333300;
+            color: #3d77dc;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ver-mais:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .btn-ver-mais {
+                padding: 10px 30px;
+                font-size: 16px;
+                margin: 30px auto;
+            }
+        }
     </style>
 </head>
 
@@ -458,9 +485,6 @@
                             </li>
                             <li class="submenu-item">
                                 <a href="#" class="submenu-link"> Acessórios</a>
-                            </li>
-                            <li class="submenu-item">
-                                <a href="#" class="submenu-link"> Promoções</a>
                             </li>
                         </ul>
                     </li>
@@ -544,7 +568,7 @@
         <div id="text-animator"
             style="text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; padding: 0 20px;">
             <h2
-                style="font-size: clamp(13px, 4vw, 18px); font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 100%; word-wrap: break-word;">
+                style="font-size: clamp(13px, 4vw, 16px); font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 100%; word-wrap: break-word;">
                 {{ textoAnimado }}<span class="cursor-blink"
                     style="animation: blink 0.7s infinite; display: inline-block; width: 2px; height: 1em; background-color: #e22a8c; margin-left: 4px; vertical-align: middle; "></span>
             </h2>
@@ -860,6 +884,8 @@
         // ===== GERADOR DE PRODUTOS (Simplificado e Otimizado) =====
 
         let produtosCarregados = [];
+        let produtosExibidos = 0;
+        const PRODUTOS_POR_PAGINA = 4;
 
         // Formata preço para Real brasileiro
         function formatarPreco(preco) {
@@ -876,18 +902,20 @@
         }
 
         // Renderiza os cards de produtos
-        function renderizarProdutos(produtos) {
+        function renderizarProdutos(produtos, isAdicional = false) {
             const container = document.getElementById('produtosContainer');
             const erroDiv = document.getElementById('produtosErro');
 
             if (!produtos || produtos.length === 0) {
-                container.innerHTML = '';
-                erroDiv.hidden = false;
+                if (!isAdicional) {
+                    container.innerHTML = '';
+                    erroDiv.hidden = false;
+                }
                 return;
             }
 
             erroDiv.hidden = true;
-            container.innerHTML = produtos.map(produto => {
+            const html = produtos.map(produto => {
                 const precoFinal = calcularPrecoComDesconto(produto.preco, produto.desconto);
                 const precoFormatado = formatarPreco(precoFinal);
                 const precoOriginal = formatarPreco(produto.preco);
@@ -949,6 +977,58 @@
                     </div>
                 `;
             }).join('');
+
+            if (isAdicional) {
+                container.innerHTML += html;
+            } else {
+                container.innerHTML = html;
+            }
+        }
+
+        // Função para carregar mais produtos
+        function carregarMaisProdutos() {
+            const inicio = produtosExibidos;
+            const fim = inicio + PRODUTOS_POR_PAGINA;
+            const novosProdutos = produtosCarregados.slice(inicio, fim);
+
+            if (novosProdutos.length === 0) {
+                return;
+            }
+
+            // Renderizar produtos imediatamente (sem esperar imagens)
+            renderizarProdutos(novosProdutos, true);
+            produtosExibidos = fim;
+
+            // Iniciar lazy loading de forma não-bloqueante (próximo ciclo do event loop)
+            setTimeout(() => {
+                iniciarLazyLoading();
+                logManager.log(`🚀 ${novosProdutos.length} produtos carregados, aguardando imagens...`);
+            }, 0);
+
+            // Atualizar botão "Ver mais"
+            atualizarBotaoVerMais();
+        }
+
+        // Atualizar botão "Ver mais"
+        function atualizarBotaoVerMais() {
+            let btnVerMais = document.getElementById('btnVerMais');
+
+            if (produtosExibidos >= produtosCarregados.length) {
+                if (btnVerMais) {
+                    btnVerMais.remove();
+                }
+                return;
+            }
+
+            if (!btnVerMais) {
+                const section = document.querySelector('.produtos-destaque');
+                btnVerMais = document.createElement('button');
+                btnVerMais.id = 'btnVerMais';
+                btnVerMais.className = 'btn-ver-mais';
+                btnVerMais.innerHTML = 'Ver mais <i class="ri-arrow-down-s-line"></i>';
+                btnVerMais.onclick = carregarMaisProdutos;
+                section.appendChild(btnVerMais);
+            }
         }
 
         // Embaralha um array (Fisher-Yates)
@@ -963,20 +1043,63 @@
         // Carrega produtos do JSON
         async function carregarProdutos() {
             try {
+                logManager.log('🔄 Iniciando carregamento de produtos...');
                 const response = await fetch('./data/toupeira.json');
                 if (!response.ok) throw new Error('Erro ao carregar produtos');
 
                 let produtos = await response.json();
                 produtosCarregados = embaralharArray(produtos);
+                logManager.log(`✓ ${produtosCarregados.length} produtos carregados do JSON`);
 
-                // Seleciona até 26 produtos em destaque (aleatoriamente)
-                const destaque = produtosCarregados.slice(0, Math.min(26, produtosCarregados.length));
-                renderizarProdutos(destaque);
+                // Exibe apenas os primeiros 4 produtos
+                const primeiros = produtosCarregados.slice(0, PRODUTOS_POR_PAGINA);
+                renderizarProdutos(primeiros, false);
+                produtosExibidos = primeiros.length;
+                logManager.log(`🎨 ${primeiros.length} produtos renderizados no DOM`);
+
+                // Criar botão "Ver mais" se houver mais produtos
+                atualizarBotaoVerMais();
+
+                return true;
             } catch (erro) {
-                console.error('Erro ao carregar produtos:', erro);
+                logManager.error('❌ Erro ao carregar produtos:', erro);
                 document.getElementById('produtosErro').hidden = false;
+                return false;
             }
         }
+
+        // Sistema de controle de logs do console
+        const logManager = (() => {
+            let logCount = 0;
+            const MAX_LOGS = 20;
+
+            return {
+                log: (message) => {
+                    console.log(message);
+                    logCount++;
+                    if (logCount >= MAX_LOGS) {
+                        console.clear();
+                        logCount = 0;
+                    }
+                },
+                warn: (message) => {
+                    console.warn(message);
+                    logCount++;
+                    if (logCount >= MAX_LOGS) {
+                        console.clear();
+                        logCount = 0;
+                    }
+                },
+                error: (message, error) => {
+                    console.error(message, error);
+                    logCount++;
+                    if (logCount >= MAX_LOGS) {
+                        console.clear();
+                        logCount = 0;
+                    }
+                }
+            };
+        })();
 
         // Adicionar ao carrinho
         function adicionarAoCarrinho(produtoId) {
@@ -986,38 +1109,263 @@
             }
         }
 
-        // Lazy Loading de imagens
-        function iniciarLazyLoading() {
-            const imagens = document.querySelectorAll('.produto-imagem[data-src]');
+        // Rastrear tentativas de reload das imagens
+        const imagemRetryMap = new Map();
+        const MAX_RETRIES = 3;
+        const RETRY_DELAYS = [1000, 2000, 4000]; // Delays progressivos em ms
+        let totalImagensFalhadas = 0;
+        let totalImagensCarregadas = 0;
+        let reloadAgendado = false;
 
+        // Função para recarregar uma imagem com retry
+        function tentarRecarregarImagem(img, tentativa = 0) {
+            if (tentativa >= MAX_RETRIES) {
+                logManager.warn(`Falha permanente ao carregar imagem: ${img.dataset.src || img.src}`);
+                img.style.opacity = '0.5';
+                totalImagensFalhadas++;
+                verificarSePaginaNecessitaReload();
+                return;
+            }
+
+            const delay = RETRY_DELAYS[tentativa];
+
+            setTimeout(() => {
+                const novaImg = new Image();
+                const urlOriginal = img.dataset.src || img.src;
+
+                novaImg.onload = () => {
+                    img.src = urlOriginal;
+                    img.style.opacity = '1';
+                    imagemRetryMap.delete(img);
+                    totalImagensCarregadas++;
+                    logManager.log(`✓ Imagem carregada com sucesso (tentativa ${tentativa + 1}): ${urlOriginal}`);
+                };
+
+                novaImg.onerror = () => {
+                    logManager.log(`✗ Erro ao carregar imagem (tentativa ${tentativa + 1}): ${urlOriginal}`);
+                    tentarRecarregarImagem(img, tentativa + 1);
+                };
+
+                novaImg.src = urlOriginal;
+            }, delay);
+        }
+
+        // Função para verificar se a página necessita recarregar
+        function verificarSePaginaNecessitaReload() {
+            if (reloadAgendado) return;
+
+            // Aguardar um pouco para dar tempo de outras imagens carregarem
+            setTimeout(() => {
+                const totalImagens = document.querySelectorAll('.produto-imagem').length;
+
+                // Se não há imagens, não faz nada
+                if (totalImagens === 0) return;
+
+                // Calcular percentual de falha
+                const percentualFalha = (totalImagensFalhadas / totalImagens) * 100;
+
+                logManager.log(`📊 Status de imagens: ${totalImagensCarregadas} carregadas, ${totalImagensFalhadas} falhadas de ${totalImagens}`);
+
+                // Se mais de 70% das imagens falharam permanentemente, recarregar a página
+                if (percentualFalha >= 70 && totalImagensFalhadas >= 3) {
+                    logManager.warn(`❌ Mais de 70% das imagens falharam permanentemente. Recarregando página em 2 segundos...`);
+                    reloadAgendado = true;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            }, 500);
+        }
+
+        // Lazy Loading de imagens com monitoramento - Carrega apenas imagens visíveis
+        function iniciarLazyLoading() {
+            const container = document.getElementById('produtosContainer');
+            if (!container) return;
+
+            // Usar IntersectionObserver para carregar apenas imagens visíveis
             if ('IntersectionObserver' in window) {
                 const imageObserver = new IntersectionObserver((entries, observer) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             const img = entry.target;
-                            img.src = img.dataset.src;
-                            img.removeAttribute('data-src');
-                            observer.unobserve(img);
+
+                            // Se já foi processada, pular
+                            if (img.dataset.processada) return;
+                            img.dataset.processada = 'true';
+
+                            const urlOriginal = img.dataset.src || img.src;
+
+                            // Tentar carregar a imagem
+                            const testImg = new Image();
+
+                            testImg.onload = () => {
+                                img.src = urlOriginal;
+                                img.removeAttribute('data-src');
+                                img.style.opacity = '1';
+                                imagemRetryMap.delete(img);
+                                totalImagensCarregadas++;
+                                logManager.log(`✓ Imagem carregada (visível): ${urlOriginal}`);
+                            };
+
+                            testImg.onerror = () => {
+                                logManager.log(`⚠ Erro ao carregar imagem: ${urlOriginal}`);
+                                img.style.opacity = '0.7';
+                                imagemRetryMap.set(img, true);
+                                tentarRecarregarImagem(img, 0);
+                            };
+
+                            testImg.src = urlOriginal;
                         }
                     });
                 }, {
-                    rootMargin: '50px'
+                    rootMargin: '150px' // Começar a carregar 150px antes de ficar visível
                 });
 
-                imagens.forEach(img => imageObserver.observe(img));
-            } else {
-                // Fallback para navegadores antigos
+                // Observar todas as imagens atuais
+                const imagens = container.querySelectorAll('.produto-imagem');
                 imagens.forEach(img => {
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
+                    if (!img.dataset.processada) {
+                        imageObserver.observe(img);
+                    }
+                });
+
+                // Monitorar quando novas imagens são adicionadas
+                const mutationObserver = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach(node => {
+                                if (node.nodeType === 1) { // Element node
+                                    // Se é uma imagem
+                                    if (node.classList && node.classList.contains('produto-imagem')) {
+                                        if (!node.dataset.processada) {
+                                            imageObserver.observe(node);
+                                        }
+                                    }
+                                    // Procurar imagens dentro do nó adicionado
+                                    const novasImagens = node.querySelectorAll?.('.produto-imagem');
+                                    if (novasImagens) {
+                                        novasImagens.forEach(img => {
+                                            if (!img.dataset.processada) {
+                                                imageObserver.observe(img);
+                                                logManager.log(`🔍 Nova imagem adicionada ao observer`);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+
+                mutationObserver.observe(container, {
+                    childList: true,
+                    subtree: true
                 });
             }
         }
 
+        // Monitor contínuo de cards com imagens falhadas
+        function monitorarCardsComFalha() {
+            const container = document.getElementById('produtosContainer');
+            if (!container) return;
+
+            // Monitorar quando novos produtos são adicionados
+            const mutationObserverProdutos = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1 && node.classList?.contains('produto-card')) {
+                                const imagens = node.querySelectorAll('.produto-imagem');
+                                logManager.log(`🆕 ${imagens.length} novas imagens detectadas`);
+                            }
+                        });
+                    }
+                });
+            });
+
+            mutationObserverProdutos.observe(container, {
+                childList: true,
+                subtree: true
+            });
+
+            // Monitor de atributos de imagens
+            const mutationObserverAtributos = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.target.classList?.contains('produto-imagem')) {
+                        const img = mutation.target;
+
+                        // Se a imagem está invisível ou com opacidade baixa, tentar recarregar
+                        if (img.style.opacity && parseFloat(img.style.opacity) < 1) {
+                            if (!imagemRetryMap.has(img)) {
+                                tentarRecarregarImagem(img, 0);
+                            }
+                        }
+                    }
+                });
+            });
+
+            mutationObserverAtributos.observe(container, {
+                attributes: true,
+                attributeFilter: ['src', 'style'],
+                subtree: true
+            });
+
+            // Verificação periódica de imagens quebradas
+            setInterval(() => {
+                const imagens = document.querySelectorAll('.produto-imagem');
+                let imagensQuebradas = 0;
+
+                imagens.forEach(img => {
+                    // Verificar se a imagem está quebrada
+                    if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+                        imagensQuebradas++;
+                        if (!imagemRetryMap.has(img) && img.src && !img.src.includes('data:image')) {
+                            logManager.log(`🔄 Detectada imagem quebrada: ${img.src}`);
+                            imagemRetryMap.set(img, true);
+                            tentarRecarregarImagem(img, 0);
+                        }
+                    }
+                });
+
+                // Log detalhado a cada 5 segundos
+                if (imagens.length > 0) {
+                    logManager.log(`📊 Status: ${totalImagensCarregadas} ✓ | ${totalImagensFalhadas} ✗ | ${imagensQuebradas} 🔄 de ${imagens.length} total`);
+                }
+
+                // Verificação final após 15 segundos
+                if (document.readyState === 'complete') {
+                    verificarSePaginaNecessitaReload();
+                }
+            }, 5000); // Verificar a cada 5 segundos
+        }
+
         // Carregar produtos ao iniciar
         document.addEventListener('DOMContentLoaded', () => {
-            carregarProdutos();
-            setTimeout(iniciarLazyLoading, 100);
+            iniciarLazyLoading();
+            monitorarCardsComFalha();
+
+            carregarProdutos().then(() => {
+                logManager.log('📦 Produtos carregados, iniciando lazy loading...');
+                setTimeout(() => {
+                    iniciarLazyLoading();
+                }, 50);
+            });
+
+            // Timeout geral: se após 20 segundos mais de 70% das imagens não carregarem, recarregar
+            setTimeout(() => {
+                if (!reloadAgendado) {
+                    const totalImagens = document.querySelectorAll('.produto-imagem').length;
+                    if (totalImagens > 0) {
+                        const percentualFalha = (totalImagensFalhadas / totalImagens) * 100;
+                        logManager.log(`📊 Verificação final: ${totalImagensCarregadas} carregadas, ${totalImagensFalhadas} falhadas de ${totalImagens}`);
+                        if (percentualFalha >= 70) {
+                            logManager.warn(`⏱ Timeout: ${percentualFalha.toFixed(0)}% de imagens falhadas. Recarregando...`);
+                            reloadAgendado = true;
+                            setTimeout(() => location.reload(), 1500);
+                        }
+                    }
+                }
+            }, 20000);
         });
     </script>
 
