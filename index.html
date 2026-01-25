@@ -20,6 +20,7 @@
             background-color: #f5f5f5;
             transition: overflow 0.3s ease;
             margin-top: 140px;
+            padding-top: 0;
         }
 
         body.menu-open {
@@ -515,11 +516,18 @@
         /* Estilos para Categorias Dropdown */
         .categorias-container {
             max-width: 1200px;
-            margin: 10px auto;
+            margin: 0 auto;
             padding: 0 20px;
             display: flex;
             justify-content: flex-start;
             animation: fadeIn 0.6s ease-in-out;
+            position: sticky;
+            top: 120px;
+            z-index: 998;
+            background-color: #f5f5f5a3;
+            backdrop-filter: blur(6px);
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
 
         .categoria-dropdown {
@@ -532,25 +540,21 @@
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
-            background-color: #ffffff;
             border: none;
             border-radius: 6px;
             font-size: 14px;
             font-weight: 400;
             color: #2a2a2a;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
             white-space: nowrap;
-            background-color: #f9f9f9;
+            background-color: #ffffff07;
         }
 
-        .categoria-badge:hover {
-            border-color: #e22a8c;
-            background-color: #fff;
-        }
+
 
         .categoria-badge i {
             font-size: 16px;
@@ -602,7 +606,7 @@
 
         .categoria-dropdown-item:hover {
             background-color: #f5f5f5;
-            color: #e22a8c;
+            color: #406cee;
         }
 
         @keyframes slideDown {
@@ -630,11 +634,14 @@
             .categorias-container {
                 gap: 5px;
                 padding: 0 15px;
+                top: 110px;
+                padding-top: 8px;
+                padding-bottom: 8px;
             }
 
             .categoria-badge {
                 padding: 10px 14px;
-                font-size: 13px;
+                font-size: 14px;
             }
 
             .categoria-dropdown-menu {
@@ -653,22 +660,6 @@
             .footer-section a,
             .footer-section p {
                 font-size: 16px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .categorias-container {
-                gap: 8px;
-                padding: 0 12px;
-            }
-
-            .categorias-hint {
-                padding: 0 12px;
-            }
-
-            .categoria-badge {
-                padding: 7px 12px;
-                font-size: 11px;
             }
         }
     </style>
@@ -1295,7 +1286,6 @@
             ];
 
             // Criar contêiner do dropdown
-            const wrapperContainer = document.createElement('div');
             const container = document.createElement('div');
             container.className = 'categorias-container';
 
@@ -1306,7 +1296,7 @@
             // Botão do dropdown
             const button = document.createElement('button');
             button.className = 'categoria-badge';
-            button.innerHTML = 'TODOS OS PRODUTOS <i class="ri-arrow-down-s-line"></i>';
+            button.innerHTML = 'Todos os produtos <i class="ri-arrow-down-s-line"></i>';
 
             // Menu do dropdown
             const menu = document.createElement('div');
@@ -1324,14 +1314,13 @@
             dropdown.appendChild(button);
             dropdown.appendChild(menu);
             container.appendChild(dropdown);
-            wrapperContainer.appendChild(container);
 
             // Inserir após o texto animado
             const textAnimator = document.getElementById('text-animator');
             if (textAnimator) {
-                textAnimator.parentElement.insertBefore(wrapperContainer, textAnimator.nextElementSibling);
+                textAnimator.parentElement.insertBefore(container, textAnimator.nextElementSibling);
             } else {
-                document.querySelector('main').insertBefore(wrapperContainer, document.querySelector('.produtos-destaque'));
+                document.querySelector('main').insertBefore(container, document.querySelector('.produtos-destaque'));
             }
 
             // Adicionar funcionalidade de toggle
