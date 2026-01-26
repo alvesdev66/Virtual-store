@@ -122,6 +122,8 @@
             min-width: 220px;
             margin-top: 10px;
             animation: slideDown 0.3s ease;
+            max-height: 284px;
+            overflow-y: auto;
         }
 
         .submenu.active {
@@ -251,11 +253,17 @@
                 min-width: unset;
                 margin-top: 0;
                 animation: none;
+                max-height: 277px;
+                overflow-y: auto;
             }
 
             .submenu-item {
                 padding: 10px 20px;
                 padding-left: 40px;
+            }
+
+            .submenu-link {
+                color: #606060;
             }
 
             .submenu.active {
@@ -515,7 +523,7 @@
 
         /* Estilos para Categorias Dropdown */
         .categorias-container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 0 20px;
             display: flex;
@@ -542,7 +550,7 @@
             padding: 10px 16px;
             border: none;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 400;
             color: #2a2a2a;
             text-transform: uppercase;
@@ -551,7 +559,7 @@
             transition: all 0.2s ease;
             text-decoration: none;
             white-space: nowrap;
-            background-color: #ffffff07;
+            background-color: #e4e4e4b8;
         }
 
 
@@ -641,7 +649,7 @@
 
             .categoria-badge {
                 padding: 10px 14px;
-                font-size: 14px;
+                font-size: 12px;
             }
 
             .categoria-dropdown-menu {
@@ -792,7 +800,7 @@
         <div id="text-animator"
             style="text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; padding: 0 20px;">
             <h2
-                style="font-size: clamp(13px, 4vw, 16px); font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 100%; word-wrap: break-word;">
+                style="font-size: clamp(13px, 4vw, 14px); font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 100%; word-wrap: break-word;">
                 {{ textoAnimado }}<span class="cursor-blink"
                     style="animation: blink 0.7s infinite; display: inline-block; width: 2px; height: 1em; background-color: #e22a8c; margin-left: 4px; vertical-align: middle; "></span>
             </h2>
@@ -813,6 +821,29 @@
     <script>
         // Vue app para controlar skeleton e zoom da logo
         const { createApp } = Vue;
+
+        // Single cached fetch para evitar múltiplas solicitações ao metadados.json
+        let metadadosCache = null;
+        let metadadosPromise = null;
+        function fetchMetadados() {
+            if (metadadosCache) return Promise.resolve(metadadosCache);
+            if (metadadosPromise) return metadadosPromise;
+            metadadosPromise = fetch('./data/metadados.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar metadados.json');
+                    return response.json();
+                })
+                .then(json => {
+                    metadadosCache = json;
+                    return json;
+                })
+                .catch(err => {
+                    metadadosPromise = null;
+                    throw err;
+                });
+            return metadadosPromise;
+        }
+
         createApp({
             data() {
                 return {
@@ -827,8 +858,7 @@
                 }
             },
             mounted() {
-                fetch('./data/metadados.json')
-                    .then(response => response.json())
+                fetchMetadados()
                     .then(data => {
                         const logoConfig = data.find(item => item.arquivo === 'logotipo-zoom');
                         if (logoConfig && logoConfig.zoom) {
@@ -840,8 +870,7 @@
         }).mount('#logo-app');
 
         // Carregar quantidade de produtos do metadados.json
-        fetch('./data/metadados.json')
-            .then(response => response.json())
+        fetchMetadados()
             .then(data => {
                 const produtosConfig = data.find(item => item.arquivo === 'produtos.json');
                 if (produtosConfig && produtosConfig['quantidade-produtos']) {
@@ -855,21 +884,22 @@
             data() {
                 return {
                     textoAnimado: '',
-                    frases: [
-                        '"Ei, vem dar uma olhadinha... 👀"',
-                        '"🫢 Esses looks estão um ARRASO, vem ver!"',
-                        '"Temos o look perfeito para você! ✨"'
-                    ],
+                    frases: [],
                     indiceAtual: 0,
                     digitando: true,
                     velocidadeDigitacao: 60,
                     velocidadeApagacao: 30,
-                    pausaAntesdeApagar: 9000,
+                    pausaAntesdeApagar: 13000,
                     pausaAntesDeTrocar: 500
                 };
             },
             methods: {
                 async animar() {
+                    // Aguardar até que as frases sejam carregadas
+                    while (this.frases.length === 0) {
+                        await this.delay(100);
+                    }
+
                     while (true) {
                         const fraseAtual = this.frases[this.indiceAtual];
 
@@ -916,7 +946,25 @@
             },
 
             mounted() {
-                this.animar();
+                // Carregar frases do metadados.json
+                fetchMetadados()
+                    .then(data => {
+                        const typewriterConfig = data.find(item => item.elemento === 'typewriter-text-home');
+                        if (typewriterConfig && typewriterConfig.frases) {
+                            // Adicionar aspas às frases
+                            this.frases = typewriterConfig.frases.map(frase => `"${frase}"`);
+                            // Iniciar a animação
+                            this.animar();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar frases do metadados.json:', error);
+                        // Fallback para frases padrão
+                        this.frases = [
+
+                        ];
+                        this.animar();
+                    });
             }
         });
 
@@ -1064,7 +1112,7 @@
             spans[0].classList.add('active');
             let visible = 0; // índice do span atualmente visível (0 ou 1)
             let currentIndex = 0;
-            const intervalo = 2000; // tempo entre trocas (ms)
+            const intervalo = 4000; // tempo entre trocas (ms)
             const duracaoAnim = 300; // deve corresponder ao transition do CSS
             let animating = false;
 
@@ -1266,24 +1314,25 @@
         }
 
         // Gerar Categorias Dinamicamente
-        function gerarCategorias() {
+        async function gerarCategorias() {
             // Verificar se as categorias já existem
             if (document.querySelector('.categoria-dropdown')) {
                 return;
             }
 
-            // Lista de categorias
-            const categorias = [
-                'BLAZER',
-                'BLUSA',
-                'BODY',
-                'BOLSA',
-                'CALÇADO',
-                'CINTO',
-                'SHORTS',
-                'SAIA',
-                'VESTIDO'
-            ];
+            // Carregar categorias do metadados.json
+            let categorias = [];
+            try {
+                const metadados = await fetchMetadados();
+                const categoriasObj = metadados.find(item => item.elemento === 'categorias');
+                if (categoriasObj && categoriasObj.categorias) {
+                    categorias = categoriasObj.categorias;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar categorias do metadados.json:', error);
+                // Fallback para categorias padrão
+                categorias = ['BLAZER', 'BLUSA', 'BODY', 'BOLSA', 'CALÇADO', 'CINTO', 'SHORTS', 'SAIA', 'VESTIDO'];
+            }
 
             // Criar contêiner do dropdown
             const container = document.createElement('div');
@@ -1324,20 +1373,57 @@
             }
 
             // Adicionar funcionalidade de toggle
-            button.addEventListener('click', (e) => {
+            // Antes de expandir, garantir que o container esteja na sua posição "sticky" (ou alinhado ao topo)
+            // Para isso, rolamos suavemente até que a posição do elemento esteja alinhada ao valor `top` computado.
+            function ensureElementAtTopOffset(el, topOffset) {
+                return new Promise((resolve) => {
+                    const rect = el.getBoundingClientRect();
+                    const desiredTop = topOffset;
+
+                    // Se já estiver alinhado (ou acima), não precisa rolar
+                    if (rect.top <= desiredTop + 1) {
+                        resolve();
+                        return;
+                    }
+
+                    const targetScroll = window.scrollY + rect.top - desiredTop;
+
+                    const onScroll = () => {
+                        const r = el.getBoundingClientRect();
+                        if (Math.abs(r.top - desiredTop) <= 2 || Math.abs(window.scrollY - targetScroll) <= 2) {
+                            window.removeEventListener('scroll', onScroll);
+                            resolve();
+                        }
+                    };
+
+                    window.addEventListener('scroll', onScroll);
+                    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+
+                    // Fallback caso a rolagem suave demore ou não seja suportada
+                    setTimeout(() => {
+                        window.removeEventListener('scroll', onScroll);
+                        resolve();
+                    }, 900);
+                });
+            }
+
+            button.addEventListener('click', async (e) => {
                 e.preventDefault();
+
+                // Recuperar top configurado via CSS (ex.: 120px / 110px em mobile)
+                const computedTop = parseFloat(getComputedStyle(container).getPropertyValue('top')) || 0;
+
+                // Se o container estiver fora da sua posição fixada (ou seja, abaixo do topo desejado), rolar primeiro
+                const rect = container.getBoundingClientRect();
+                if (rect.top > computedTop + 1) {
+                    await ensureElementAtTopOffset(container, computedTop);
+                    // Pequena pausa para garantir que a transição de posição do sticky esteja completa
+                    await new Promise(r => setTimeout(r, 80));
+                }
+
+                // Agora sim toggle do menu
                 menu.classList.toggle('active');
                 button.classList.toggle('active');
-
-                // Scroll suave para o elemento quando abrir
-                if (menu.classList.contains('active')) {
-                    setTimeout(() => {
-                        dropdown.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'center'
-                        });
-                    }, 50);
-                }
             });
 
             // Fechar dropdown ao clicar em um item
@@ -1357,7 +1443,49 @@
                 }
             });
 
+            // Fechar dropdown ao rolar a tela
+            window.addEventListener('scroll', () => {
+                menu.classList.remove('active');
+                button.classList.remove('active');
+            }, { once: false });
+
             logManager.log('✓ Categorias em dropdown geradas dinamicamente');
+        }
+
+        // Carregar Submenu de Produtos da Nav
+        async function carregarSubmenuProdutos() {
+            try {
+                const metadados = await fetchMetadados();
+                const categoriasObj = metadados.find(item => item.elemento === 'categorias');
+
+                if (!categoriasObj || !categoriasObj.categorias) {
+                    return;
+                }
+
+                const categorias = categoriasObj.categorias;
+                const submenu = document.querySelector('.submenu');
+
+                if (!submenu) return;
+
+                // Limpar submenu existente
+                submenu.innerHTML = '';
+
+                // Adicionar categorias ao submenu
+                categorias.forEach(categoria => {
+                    const li = document.createElement('li');
+                    li.className = 'submenu-item';
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.className = 'submenu-link';
+                    a.textContent = categoria;
+                    li.appendChild(a);
+                    submenu.appendChild(li);
+                });
+
+                logManager.log('✓ Submenu de produtos carregado do metadados.json');
+            } catch (error) {
+                console.error('Erro ao carregar submenu de produtos:', error);
+            }
         }
 
         // Gerar Footer Dinamicamente
@@ -1520,7 +1648,6 @@
                     img.style.opacity = '1';
                     imagemRetryMap.delete(img);
                     totalImagensCarregadas++;
-                    logManager.log(`✓ Imagem carregada com sucesso (tentativa ${tentativa + 1}): ${urlOriginal}`);
                 };
 
                 novaImg.onerror = () => {
@@ -1586,7 +1713,6 @@
                                 img.style.opacity = '1';
                                 imagemRetryMap.delete(img);
                                 totalImagensCarregadas++;
-                                logManager.log(`✓ Imagem carregada (visível): ${urlOriginal}`);
                             };
 
                             testImg.onerror = () => {
@@ -1754,6 +1880,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             iniciarLazyLoading();
             monitorarCardsComFalha();
+
+            // Carregar submenu de produtos primeiro
+            carregarSubmenuProdutos();
 
             carregarProdutos().then(() => {
                 logManager.log('📦 Produtos carregados, iniciando lazy loading...');
