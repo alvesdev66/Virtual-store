@@ -11,8 +11,7 @@
     align-items: center;
     padding: 10px 20px;
     width: 100%;
-    background-color: #fefefe;
-   /* backdrop-filter: blur(4px);*/
+    background-color: #f7f7f7;
     z-index: 999;
  }
 

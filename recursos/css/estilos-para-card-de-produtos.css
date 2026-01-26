@@ -60,7 +60,7 @@
 /* BADGE DE DESCONTO */
 .desconto-badge {
     display: inline-block;
-    background: #d46262;
+    background: #ff2c2c;
     color: #ffffff;
     padding: 6px 12px;
     font-size: 12px;
@@ -108,7 +108,7 @@
 .produto-nome {
     font-size: 16px;
     font-weight: 400;
-    color: #487cf5;
+    color: #3d6dc1;
     margin-bottom: 6px;
     line-height: 1.4;
     text-transform: capitalize;
@@ -132,7 +132,7 @@
 }
 
 .produto-preco-original {
-    font-size: 12px;
+    font-size: 16px;
     color: #999999;
     text-decoration: line-through;
     margin-bottom: 4px;
@@ -142,8 +142,8 @@
 
 .produto-preco-atual {
     font-size: 18px;
-    font-weight: 700;
-    color: #e22a8c;
+    font-weight: 400;
+    color: #474747;
     letter-spacing: 0.3px;
 }
 
@@ -239,7 +239,7 @@
     }
 
     .produto-nome {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .produto-descricao-pequena {
@@ -276,7 +276,7 @@
     }
 
     .produto-nome {
-        font-size: 14px;
+        font-size: 17px;
         margin-bottom: 4px;
     }
 
@@ -290,7 +290,7 @@
     }
 
     .produto-preco-atual {
-        font-size: 15px;
+        font-size: 22px;
     }
 
     .produto-botao {
