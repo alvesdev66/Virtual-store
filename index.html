@@ -527,7 +527,10 @@
             margin: 0 auto;
             padding: 0 20px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
             animation: fadeIn 0.6s ease-in-out;
             position: sticky;
             top: 120px;
@@ -617,6 +620,34 @@
             color: #406cee;
         }
 
+        /* Badge de Pesquisa */
+        .pesquisa-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: #3d77dc;
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            animation: slideDown 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .pesquisa-badge i {
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .pesquisa-badge i:hover {
+            transform: scale(1.2);
+        }
+
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -629,8 +660,27 @@
             }
         }
 
-        .categorias-hint {
-            display: none;
+        /* Responsivo para telas muito pequenas (landscape pequeno e portrait) */
+        @media (max-width: 380px) {
+            .categorias-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                top: 110px;
+                padding: 8px 15px;
+            }
+
+            .pesquisa-badge {
+                width: 100%;
+                justify-content: space-between;
+                margin-left: 0;
+                flex-shrink: 1;
+                font-size: 11px;
+            }
+
+            .categoria-badge {
+                width: 100%;
+            }
         }
 
         @media (max-width: 768px) {
@@ -830,6 +880,220 @@
     <!-- Script -->
 
     <script>
+        // ===== SISTEMA DE CACHE DE IMAGENS (10 DIAS) =====
+        class ImagemCacheManager {
+            constructor() {
+                this.dbName = 'JuveleCacheDB';
+                this.storeName = 'imagensProdutos';
+                this.metadataKey = 'juvele_cache_metadata';
+                this.DURACAO_CACHE = 10 * 24 * 60 * 60 * 1000; // 10 dias em ms
+                this.db = null;
+                this.inicializado = false;
+                this.init();
+            }
+
+            async init() {
+                try {
+                    this.db = await this.abrirBanco();
+                    this.inicializado = true;
+                    this.limparCacheExpirado();
+                } catch (err) {
+                    console.warn('⚠️ IndexedDB não disponível, usando fallback:', err);
+                    this.inicializado = false;
+                }
+            }
+
+            abrirBanco() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, 1);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(this.storeName)) {
+                            const store = db.createObjectStore(this.storeName, { keyPath: 'url' });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                    };
+                });
+            }
+
+            async obterDoCache(url) {
+                if (!this.inicializado || !this.db) return null;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readonly');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.get(url);
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            const resultado = request.result;
+
+                            if (resultado) {
+                                // Verificar se expirou
+                                const agora = Date.now();
+                                if (agora - resultado.timestamp < this.DURACAO_CACHE) {
+                                    resolve(resultado.blob);
+                                } else {
+                                    // Expirou, deletar do cache
+                                    this.deletarDoCache(url);
+                                    resolve(null);
+                                }
+                            } else {
+                                resolve(null);
+                            }
+                        };
+                    });
+                } catch (err) {
+                    console.warn('❌ Erro ao ler cache:', err);
+                    return null;
+                }
+            }
+
+            async salvarNoCache(url, blob) {
+                if (!this.inicializado || !this.db) return false;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readwrite');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.put({
+                            url: url,
+                            blob: blob,
+                            timestamp: Date.now()
+                        });
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => resolve(true);
+                    });
+                } catch (err) {
+                    console.warn('❌ Erro ao salvar no cache:', err);
+                    return false;
+                }
+            }
+
+            async deletarDoCache(url) {
+                if (!this.inicializado || !this.db) return;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readwrite');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.delete(url);
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => resolve();
+                    });
+                } catch (err) {
+                    console.warn('❌ Erro ao deletar cache:', err);
+                }
+            }
+
+            async obterImagemEmCache(url) {
+                const blob = await this.obterDoCache(url);
+                if (blob) {
+                    try {
+                        return URL.createObjectURL(blob);
+                    } catch (err) {
+                        console.warn('❌ Erro ao criar object URL:', err);
+                        return null;
+                    }
+                }
+                return null;
+            }
+
+            async baixarECachear(url) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+
+                    const blob = await response.blob();
+                    await this.salvarNoCache(url, blob);
+
+                    return URL.createObjectURL(blob);
+                } catch (err) {
+                    console.error('❌ Erro ao baixar imagem:', err);
+                    return null;
+                }
+            }
+
+            async obterImagemComCache(url) {
+                // Tentar obter do cache primeiro
+                const urlEmCache = await this.obterImagemEmCache(url);
+                if (urlEmCache) {
+                    console.log('✅ Usando imagem do cache:', url);
+                    return urlEmCache;
+                }
+
+                // Se não estiver em cache, baixar e cachear
+                console.log('📥 Baixando imagem para cache:', url);
+                return await this.baixarECachear(url);
+            }
+
+            async limparCacheExpirado() {
+                if (!this.inicializado || !this.db) return;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readwrite');
+                        const store = transaction.objectStore(this.storeName);
+                        const index = store.index('timestamp');
+                        const range = IDBKeyRange.upperBound(Date.now() - this.DURACAO_CACHE);
+                        const request = index.openCursor(range);
+
+                        let deletados = 0;
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = (event) => {
+                            const cursor = event.target.result;
+                            if (cursor) {
+                                cursor.delete();
+                                deletados++;
+                                cursor.continue();
+                            } else {
+                                if (deletados > 0) {
+                                    console.log(`🧹 Limpeza de cache: ${deletados} imagens expiradas removidas`);
+                                }
+                                resolve();
+                            }
+                        };
+                    });
+                } catch (err) {
+                    console.warn('⚠️ Erro ao limpar cache expirado:', err);
+                }
+            }
+
+            async obterTamanhoCacheEmMB() {
+                if (!this.inicializado || !this.db) return 0;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readonly');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.getAll();
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            let tamanho = 0;
+                            request.result.forEach(item => {
+                                if (item.blob) {
+                                    tamanho += item.blob.size;
+                                }
+                            });
+                            resolve((tamanho / (1024 * 1024)).toFixed(2));
+                        };
+                    });
+                } catch (err) {
+                    console.warn('⚠️ Erro ao calcular tamanho do cache:', err);
+                    return 0;
+                }
+            }
+        }
+
+        // Instanciar o gerenciador de cache
+        const imagemCache = new ImagemCacheManager();
+
         // Vue app para controlar skeleton e zoom da logo
         const { createApp } = Vue;
 
@@ -1262,6 +1526,8 @@
             buscaInput.value = valor;
             fecharSugestoes();
             buscaInput.focus();
+            // Realizar busca automaticamente ao selecionar sugestão
+            realizarBusca(valor);
             // disparar evento customizado (hook para lógica de busca existente)
             try { window.dispatchEvent(new CustomEvent('sugestao:selecionada', { detail: { query: valor } })); } catch (e) { console.log('sugestao selecionada', valor); }
         }
@@ -1335,6 +1601,10 @@
                     if (activeSuggestionIndex >= 0) {
                         e.preventDefault();
                         selecionarSugestao(activeSuggestionIndex);
+                    } else {
+                        // Se não houver sugestão selecionada, realizar busca com o texto atual
+                        e.preventDefault();
+                        realizarBusca();
                     }
                     return;
                 }
@@ -1422,6 +1692,14 @@
             }
         }
 
+        // Listener para ícone de pesquisa
+        const iconPesquisa = document.querySelector('.icon-pesquisa');
+        if (iconPesquisa) {
+            iconPesquisa.addEventListener('click', (e) => {
+                e.preventDefault();
+                realizarBusca();
+            });
+        }
 
         // Toggle Menu Mobile
         hamburger.addEventListener('click', () => {
@@ -1931,6 +2209,192 @@
             logManager.log('✓ Categorias em dropdown geradas dinamicamente');
         }
 
+        // ===== SISTEMA DE BUSCA DE PRODUTOS =====
+        let termoBuscaAtual = null;
+        let produtosCarregadosOriginal = []; // Armazena os produtos originais
+
+        // Filtra produtos pelo termo de busca
+        function filtrarProdutosPorBusca(termo) {
+            if (!termo || termo.trim().length < 1) {
+                return produtosCarregadosOriginal;
+            }
+
+            const termoNormalizado = normalizarTermo(termo);
+
+            // Quebrar o termo em palavras individuais
+            const palavrasBusca = termo.trim().toLowerCase().split(/\s+/).filter(p => p.length > 0);
+
+            // Mapear palavras normalizadas
+            const palavrasNormalizadas = palavrasBusca.map(p => normalizarTermo(p));
+
+            // Filtrar e calcular pontuação de relevância
+            const resultados = produtosCarregadosOriginal.map(produto => {
+                const nomeNorm = normalizarTermo(produto.nome);
+                const descricaoNorm = normalizarTermo(produto.descricao || '');
+                const categoriaNorm = normalizarTermo(produto.categoria || '');
+
+                // Contar quantas palavras da busca correspondem
+                let pontuacao = 0;
+                let detalhesMatches = [];
+
+                for (const palavra of palavrasNormalizadas) {
+                    let matches = 0;
+
+                    // Buscar correspondência exata em nome (maior peso)
+                    if (nomeNorm.includes(palavra)) {
+                        matches += 3;
+                        if (!detalhesMatches.includes('nome')) detalhesMatches.push('nome');
+                    }
+
+                    // Buscar correspondência em descrição (peso médio)
+                    if (descricaoNorm.includes(palavra)) {
+                        matches += 2;
+                        if (!detalhesMatches.includes('descrição')) detalhesMatches.push('descrição');
+                    }
+
+                    // Buscar correspondência em categoria (peso menor)
+                    if (categoriaNorm.includes(palavra)) {
+                        matches += 1;
+                        if (!detalhesMatches.includes('categoria')) detalhesMatches.push('categoria');
+                    }
+
+                    pontuacao += matches;
+                }
+
+                // Retornar apenas produtos com pontuação > 0
+                return {
+                    produto,
+                    pontuacao,
+                    numPalavrasCorrespondentes: detalhesMatches.length
+                };
+            }).filter(item => item.pontuacao > 0);
+
+            // Ordenar por:
+            // 1. Número de palavras que correspondem (decrescente)
+            // 2. Pontuação total (decrescente)
+            // 3. Nome do produto (alfabético)
+            resultados.sort((a, b) => {
+                if (b.numPalavrasCorrespondentes !== a.numPalavrasCorrespondentes) {
+                    return b.numPalavrasCorrespondentes - a.numPalavrasCorrespondentes;
+                }
+                if (b.pontuacao !== a.pontuacao) {
+                    return b.pontuacao - a.pontuacao;
+                }
+                return a.produto.nome.localeCompare(b.produto.nome, 'pt-BR');
+            });
+
+            // Retornar apenas os produtos (sem metadados)
+            return resultados.map(item => item.produto);
+        }
+
+        // Realiza a busca e renderiza resultados
+        async function realizarBusca(termo) {
+            const searchInput = termo || buscaInput.value.trim();
+
+            if (!searchInput || searchInput.length < 1) {
+                // Se vazio, recarregar todos os produtos
+                termoBuscaAtual = null;
+                produtosCarregados = [...produtosCarregadosOriginal];
+                produtosExibidos = 0;
+                removerBadgePesquisa();
+                carregarMaisProdutos();
+                return;
+            }
+
+            termoBuscaAtual = searchInput;
+            fecharSugestoes();
+
+            // Filtrar produtos
+            const produtosFiltrados = filtrarProdutosPorBusca(searchInput);
+
+            // Renderizar resultados
+            if (produtosFiltrados.length === 0) {
+                document.getElementById('produtosContainer').innerHTML = '';
+                document.getElementById('produtosErro').hidden = false;
+                document.getElementById('produtosErro').textContent = `Nenhum produto encontrado para "${searchInput}"`;
+            } else {
+                document.getElementById('produtosContainer').innerHTML = '';
+                document.getElementById('produtosErro').hidden = true;
+
+                // Armazenar produtos filtrados para "Ver mais"
+                produtosCarregados = produtosFiltrados;
+                produtosExibidos = 0;
+
+                // Renderizar os primeiros 24 produtos de busca
+                carregarMaisProdutos();
+            }
+
+            // Exibir badge de pesquisa
+            exibirBadgePesquisa(searchInput);
+
+            // Fazer scroll até a seção de produtos (similar ao dropdown de categorias)
+            await fazerScrollParaProdutos();
+
+            logManager.log(`🔍 Pesquisa realizada: "${searchInput}" - ${produtosFiltrados.length} produtos encontrados`);
+        }
+
+        // Função para exibir badge de pesquisa
+        function exibirBadgePesquisa(termo) {
+            // Remover badge anterior se existir
+            removerBadgePesquisa();
+
+            const container = document.querySelector('.categorias-container');
+            if (!container) return;
+
+            // Limitar o termo a 30 caracteres
+            const LIMITE_CARACTERES = 30;
+            const termoTruncado = termo.length > LIMITE_CARACTERES
+                ? termo.substring(0, LIMITE_CARACTERES) + '...'
+                : termo;
+
+            const badge = document.createElement('div');
+            badge.className = 'pesquisa-badge';
+            badge.id = 'pesquisa-badge-ativo';
+            badge.innerHTML = `
+                <i class="ri-search-line"></i>
+                <strong>${termoTruncado}</strong>
+                <i class="ri-close-line" style="margin-left: auto; cursor: pointer;"></i>
+            `;
+
+            // Adicionar evento para fechar o badge
+            badge.querySelector('.ri-close-line').addEventListener('click', (e) => {
+                e.preventDefault();
+                limparBusca();
+            });
+
+            container.appendChild(badge);
+        }
+
+        // Função para remover badge de pesquisa
+        function removerBadgePesquisa() {
+            const badge = document.getElementById('pesquisa-badge-ativo');
+            if (badge) {
+                badge.remove();
+            }
+        }
+
+        // Função para fazer scroll até a seção de produtos
+        async function fazerScrollParaProdutos() {
+            const textAnimator = document.getElementById('text-animator');
+            if (!textAnimator) return;
+
+            await new Promise((resolve) => {
+                textAnimator.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(resolve, 600);
+            });
+        }
+
+        // Limpar busca
+        function limparBusca() {
+            buscaInput.value = '';
+            termoBuscaAtual = null;
+            removerBadgePesquisa();
+            updateBuscaClear();
+            produtosExibidos = 0;
+            // Gerar novos produtos ao limpar a busca
+            carregarProdutos();
+        }
+
         // Carregar Submenu de Produtos da Nav
         async function carregarSubmenuProdutos() {
             try {
@@ -2037,10 +2501,12 @@
                 if (!response.ok) throw new Error('Erro ao carregar produtos');
 
                 let produtos = await response.json();
-                produtosCarregados = embaralharArray(produtos);
+                produtos = embaralharArray(produtos);
+                produtosCarregados = produtos;
+                produtosCarregadosOriginal = [...produtos]; // Armazenar cópia original
                 logManager.log(`✓ ${produtosCarregados.length} produtos carregados do JSON`);
 
-                // Exibe apenas os primeiros 4 produtos
+                // Exibe apenas os primeiros 24 produtos
                 const primeiros = produtosCarregados.slice(0, PRODUTOS_POR_PAGINA);
                 renderizarProdutos(primeiros, false);
                 produtosExibidos = primeiros.length;
@@ -2106,7 +2572,7 @@
         let totalImagensCarregadas = 0;
         let reloadAgendado = false;
 
-        // Função para recarregar uma imagem com retry
+        // Função para recarregar uma imagem com retry e CACHE
         function tentarRecarregarImagem(img, tentativa = 0) {
             if (tentativa >= MAX_RETRIES) {
                 logManager.warn(`Falha permanente ao carregar imagem: ${img.dataset.src || img.src}`);
@@ -2117,24 +2583,26 @@
             }
 
             const delay = RETRY_DELAYS[tentativa];
+            const urlOriginal = img.dataset.src || img.src;
 
             setTimeout(() => {
-                const novaImg = new Image();
-                const urlOriginal = img.dataset.src || img.src;
-
-                novaImg.onload = () => {
-                    img.src = urlOriginal;
-                    img.style.opacity = '1';
-                    imagemRetryMap.delete(img);
-                    totalImagensCarregadas++;
-                };
-
-                novaImg.onerror = () => {
+                // ===== TENTAR RECARREGAR COM CACHE =====
+                imagemCache.obterImagemComCache(urlOriginal).then(urlParaUsar => {
+                    if (urlParaUsar) {
+                        img.src = urlParaUsar;
+                        img.style.opacity = '1';
+                        imagemRetryMap.delete(img);
+                        totalImagensCarregadas++;
+                        logManager.log(`✓ Imagem recarregada com sucesso: ${urlOriginal}`);
+                    } else {
+                        // Falha ao usar cache, tentar novamente
+                        logManager.log(`✗ Erro ao carregar imagem (tentativa ${tentativa + 1}): ${urlOriginal}`);
+                        tentarRecarregarImagem(img, tentativa + 1);
+                    }
+                }).catch(err => {
                     logManager.log(`✗ Erro ao carregar imagem (tentativa ${tentativa + 1}): ${urlOriginal}`);
                     tentarRecarregarImagem(img, tentativa + 1);
-                };
-
-                novaImg.src = urlOriginal;
+                });
             }, delay);
         }
 
@@ -2165,7 +2633,7 @@
             }, 500);
         }
 
-        // Lazy Loading de imagens com monitoramento - Carrega apenas imagens visíveis
+        // Lazy Loading de imagens com monitoramento e CACHE - Carrega apenas imagens visíveis
         function iniciarLazyLoading() {
             const container = document.getElementById('produtosContainer');
             if (!container) return;
@@ -2183,25 +2651,30 @@
 
                             const urlOriginal = img.dataset.src || img.src;
 
-                            // Tentar carregar a imagem
-                            const testImg = new Image();
+                            // ===== CARREGAR IMAGEM COM CACHE =====
+                            imagemCache.obterImagemComCache(urlOriginal).then(urlParaUsar => {
+                                if (!urlParaUsar) {
+                                    // Falha ao carregar, tentar retry
+                                    logManager.log(`⚠ Erro ao carregar imagem: ${urlOriginal}`);
+                                    img.style.opacity = '0.7';
+                                    imagemRetryMap.set(img, true);
+                                    tentarRecarregarImagem(img, 0);
+                                    return;
+                                }
 
-                            testImg.onload = () => {
-                                img.src = urlOriginal;
+                                // Sucesso, aplicar a URL (pode ser do cache ou blob URL)
+                                img.src = urlParaUsar;
                                 img.removeAttribute('data-src');
                                 img.style.opacity = '1';
                                 imagemRetryMap.delete(img);
                                 totalImagensCarregadas++;
-                            };
-
-                            testImg.onerror = () => {
-                                logManager.log(`⚠ Erro ao carregar imagem: ${urlOriginal}`);
+                                logManager.log(`✅ Imagem carregada: ${urlOriginal}`);
+                            }).catch(err => {
+                                console.error('Erro ao processar imagem com cache:', err);
                                 img.style.opacity = '0.7';
                                 imagemRetryMap.set(img, true);
                                 tentarRecarregarImagem(img, 0);
-                            };
-
-                            testImg.src = urlOriginal;
+                            });
                         }
                     });
                 }, {
@@ -2388,6 +2861,100 @@
                     }
                 }
             }, 20000);
+        });
+
+        // ===== UTILITÁRIOS DE GERENCIAMENTO DE CACHE PARA O CONSOLE =====
+        // O desenvolvedor pode chamar essas funções no console para monitorar e gerenciar o cache
+        window.JuveleCacheTools = {
+            // Verificar tamanho do cache
+            async tamanho() {
+                const mb = await imagemCache.obterTamanhoCacheEmMB();
+                console.log(`📦 Tamanho total do cache: ${mb} MB`);
+                return mb;
+            },
+
+            // Limpar todo o cache manualmente
+            async limparTudo() {
+                if (!imagemCache.inicializado || !imagemCache.db) {
+                    console.warn('❌ IndexedDB não disponível');
+                    return false;
+                }
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = imagemCache.db.transaction([imagemCache.storeName], 'readwrite');
+                        const store = transaction.objectStore(imagemCache.storeName);
+                        const request = store.clear();
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            console.log('✅ Cache de imagens limpo com sucesso!');
+                            resolve(true);
+                        };
+                    });
+                } catch (err) {
+                    console.error('❌ Erro ao limpar cache:', err);
+                    return false;
+                }
+            },
+
+            // Limpar cache expirado
+            async limparExpirado() {
+                await imagemCache.limparCacheExpirado();
+                console.log('✅ Cache expirado limpo com sucesso!');
+            },
+
+            // Informações detalhadas do cache
+            async info() {
+                if (!imagemCache.inicializado || !imagemCache.db) {
+                    console.warn('❌ IndexedDB não disponível');
+                    return null;
+                }
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = imagemCache.db.transaction([imagemCache.storeName], 'readonly');
+                        const store = transaction.objectStore(imagemCache.storeName);
+                        const request = store.getAll();
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            const items = request.result;
+                            let tamanho = 0;
+                            const agora = Date.now();
+
+                            console.table(items.map(item => ({
+                                URL: item.url.substring(0, 50) + '...',
+                                Tamanho: ((item.blob.size / 1024).toFixed(2)) + ' KB',
+                                Armazenado: new Date(item.timestamp).toLocaleString('pt-BR'),
+                                Expira: new Date(item.timestamp + imagemCache.DURACAO_CACHE).toLocaleString('pt-BR'),
+                                Válido: agora - item.timestamp < imagemCache.DURACAO_CACHE ? '✅' : '❌'
+                            })));
+
+                            items.forEach(item => tamanho += item.blob.size);
+                            console.log(`\n📊 Total: ${items.length} imagens em cache | ${(tamanho / (1024 * 1024)).toFixed(2)} MB`);
+
+                            resolve({
+                                totalImagens: items.length,
+                                tamanhoMB: (tamanho / (1024 * 1024)).toFixed(2)
+                            });
+                        };
+                    });
+                } catch (err) {
+                    console.error('❌ Erro ao obter informações do cache:', err);
+                    return null;
+                }
+            }
+        };
+
+        // Log inicial do cache
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(async () => {
+                const tamanho = await imagemCache.obterTamanhoCacheEmMB();
+                console.log(`%c✅ Sistema de Cache Iniciado`, 'color: green; font-weight: bold;');
+                console.log(`%c📦 Cache atual: ${tamanho} MB | Duração: 10 dias`, 'color: blue;');
+                console.log(`%c💡 Use window.JuveleCacheTools.info() para ver detalhes do cache`, 'color: orange;');
+            }, 500);
         });
     </script>
 
