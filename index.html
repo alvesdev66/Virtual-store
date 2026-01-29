@@ -754,6 +754,12 @@
                 <input id="busca-input" type="search" placeholder="Estou buscando..." autocomplete="off"
                     aria-autocomplete="list" aria-controls="sugestoes-list" aria-expanded="false" role="combobox">
 
+                <!-- Botão limpar (visível apenas quando há texto) -->
+                <button type="button" id="busca-clear" class="clear-btn" aria-label="Limpar pesquisa"
+                    title="Limpar pesquisa" hidden>
+                    <i class="ri-close-line" aria-hidden="true"></i>
+                </button>
+
                 <!-- Sugestões dinâmicas (preenchidas via JS a partir de data/x89(N2).json) -->
                 <ul id="sugestoes-list" class="sugestoes-list" role="listbox" aria-label="Sugestões de pesquisa" hidden>
                 </ul>
@@ -989,6 +995,51 @@
         let debounceTimer = null;
         let activeSuggestionIndex = -1;
 
+        // Botão limpar (x) - comportamento JS: visibilidade e ação
+        const buscaClear = document.getElementById('busca-clear');
+
+        function updateBuscaClear() {
+            if (!buscaInput || !buscaClear) return;
+            if (buscaInput.value.trim().length > 0) {
+                buscaClear.classList.add('visible');
+                buscaClear.removeAttribute('hidden');
+                buscaClear.setAttribute('aria-hidden', 'false');
+            } else {
+                buscaClear.classList.remove('visible');
+                buscaClear.setAttribute('hidden', '');
+                buscaClear.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        if (buscaInput) {
+            buscaInput.addEventListener('input', updateBuscaClear);
+            buscaInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (buscaInput.value) {
+                        buscaInput.value = '';
+                        updateBuscaClear();
+                        fecharSugestoes();
+                        buscaInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    } else {
+                        buscaInput.blur();
+                    }
+                }
+            });
+        }
+
+        if (buscaClear) {
+            buscaClear.addEventListener('click', (e) => {
+                buscaInput.value = '';
+                updateBuscaClear();
+                fecharSugestoes();
+                buscaInput.focus();
+                buscaInput.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+        }
+
+        // Garantir estado inicial após DOM carregar
+        document.addEventListener('DOMContentLoaded', () => setTimeout(updateBuscaClear, 0));
+
         async function carregarSugestoes() {
             if (sugestoesCache) return sugestoesCache;
             try {
@@ -1038,35 +1089,16 @@
         // cache leve para as variantes normalizadas das sugestões (evita recomputar em cada tecla)
         const _sugestoesNormCache = new Map();
 
-        // distância de Levenshtein (rápida, usada apenas como fallback para tolerância pequena)
-        function levenshtein(a, b) {
-            a = a || '';
-            b = b || '';
-            if (a === b) return 0;
-            const m = a.length, n = b.length;
-            if (m === 0) return n;
-            if (n === 0) return m;
-            const dp = Array.from({ length: n + 1 }, (_, i) => i);
-            for (let i = 1; i <= m; i++) {
-                let prev = i;
-                for (let j = 1; j <= n; j++) {
-                    const cur = dp[j];
-                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-                    dp[j] = Math.min(dp[j] + 1, dp[j - 1] + 1, prev + cost);
-                    prev = cur;
-                }
-            }
-            return dp[n];
-        }
-
         function filtrar(q, lista) {
             if (!q) return [];
             const raw = String(q).trim();
-            if (raw.length === 0) return [];
+            // exigir pelo menos 2 caracteres para começar a sugerir
+            if (raw.length < 2) return [];
 
+            const qNorm = normalizarTermo(raw);
             const queryVariants = gerarVariantesSimples(raw);
-            const starts = [];
-            const includes = [];
+
+            const scored = [];
 
             for (const s of lista) {
                 const sugVars = _sugestoesNormCache.get(s) || (function () {
@@ -1075,47 +1107,83 @@
                     return v;
                 })();
 
-                let matched = false;
+                let score = 0;
+                let bestPos = Infinity;
 
-                // 1) Priorizar prefix matches entre quaisquer variantes
-                for (const qv of queryVariants) {
-                    for (const sv of sugVars) {
-                        if (sv.startsWith(qv)) {
-                            starts.push(s);
-                            matched = true;
-                            break;
-                        }
+                // Exact match (highest priority)
+                for (const sv of sugVars) {
+                    if (sv === qNorm) {
+                        score += 200;
+                        bestPos = 0;
+                        break;
                     }
-                    if (matched) break;
-                }
-                if (matched) continue;
-
-                // 2) aceitar includes (substring) entre variantes
-                for (const qv of queryVariants) {
-                    for (const sv of sugVars) {
-                        if (sv.includes(qv)) {
-                            includes.push(s);
-                            matched = true;
-                            break;
-                        }
-                    }
-                    if (matched) break;
                 }
 
-                // 3) fallback tolerante (levenshtein <= 1) para queries curtas/medias
-                if (!matched && raw.length >= 3 && raw.length <= 12) {
-                    const qNorm = normalizarTermo(raw);
+                // Prefix matches (start of suggestion)
+                if (score === 0) {
                     for (const sv of sugVars) {
-                        if (levenshtein(sv, qNorm) <= 1) {
-                            includes.push(s);
+                        if (sv.startsWith(qNorm)) {
+                            score += 120;
+                            bestPos = 0;
                             break;
                         }
                     }
+                }
+
+                // Match at start of any word inside the suggestion (e.g. query='bolsa' matches 'Bolsa Baguete' and 'Mini Bolsa')
+                if (score === 0) {
+                    for (const sv of sugVars) {
+                        const parts = sv.split(/\s+/);
+                        for (const p of parts) {
+                            if (p.startsWith(qNorm)) {
+                                score += 100;
+                                bestPos = Math.min(bestPos, sv.indexOf(p));
+                                break;
+                            }
+                        }
+                        if (score >= 100) break;
+                    }
+                }
+
+                // Substring matches
+                if (score === 0) {
+                    for (const sv of sugVars) {
+                        const idx = sv.indexOf(qNorm);
+                        if (idx !== -1) {
+                            // earlier occurrences are better
+                            score += Math.max(40, 60 - Math.min(40, idx));
+                            bestPos = Math.min(bestPos, idx);
+                            break;
+                        }
+                    }
+                }
+
+
+                if (score > 0) {
+                    // small preference for shorter labels and for suggestions where the first word equals the query
+                    const firstWord = normalizarTermo(String(s).split(/\s+/)[0] || '');
+                    if (firstWord === qNorm) score += 8;
+                    score += Math.max(0, 6 - String(s).length / 8);
+
+                    scored.push({ s, score, pos: bestPos, len: String(s).length });
                 }
             }
 
-            // manter ordem (starts -> includes), remover duplicatas e limitar
-            return starts.concat(includes).filter((v, i, a) => a.indexOf(v) === i).slice(0, 6);
+            // ordenar por score desc, posição asc (earlier match), comprimento asc, texto
+            scored.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                if (a.pos !== b.pos) return a.pos - b.pos;
+                if (a.len !== b.len) return a.len - b.len;
+                return a.s.localeCompare(b.s, 'pt-BR');
+            });
+
+            // retornar strings únicas, permitir um pool maior (rolável) mas visualmente mostramos 4 — limitar pool a 12
+            const out = [];
+            for (const item of scored) {
+                if (out.indexOf(item.s) === -1) out.push(item.s);
+                if (out.length >= 12) break;
+            }
+            return out;
         }
 
         function renderSugestoes(items, query) {
@@ -1146,10 +1214,35 @@
             }
 
             sugestoesList.innerHTML = items.map((s, idx) => `
-                <li id="sug-${idx}" role="option" data-index="${idx}" class="sugestao-item" tabindex="-1" aria-selected="false">${s}</li>
+                <li id="sug-${idx}" role="option" data-index="${idx}" class="sugestao-item" tabindex="-1" aria-selected="false">
+                    <span class="sug-text">${s}</span>
+                    <i class="ri-arrow-left-up-line sugestao-icon" aria-hidden="true"></i>
+                </li>
             `).join('');
             sugestoesList.hidden = false;
             buscaInput.setAttribute('aria-expanded', 'true');
+
+            // quando há mais resultados que a janela visível, avisar leitores de tela e expor dica de scroll
+            const visibleCount = (window.matchMedia && window.matchMedia('(max-width:520px)').matches) ? 4 : 6;
+            if (items.length > visibleCount) {
+                let hint = document.getElementById('sugestoes-scroll-hint');
+                const text = `Mostrando ${visibleCount} de ${items.length} resultados. Deslize para ver mais.`;
+                if (!hint) {
+                    hint = document.createElement('div');
+                    hint.id = 'sugestoes-scroll-hint';
+                    hint.setAttribute('aria-hidden', 'false');
+                    Object.assign(hint.style, { position: 'absolute', width: '1px', height: '1px', margin: '-1px', border: '0', padding: '0', overflow: 'hidden', clip: 'rect(0 0 0 0)' });
+                    hint.textContent = text;
+                    // inserir como irmão do dropdown para manter o escopo visual separado
+                    sugestoesList.parentElement && sugestoesList.parentElement.appendChild(hint);
+                } else {
+                    hint.textContent = text;
+                }
+                sugestoesList.setAttribute('aria-describedby', 'sugestoes-scroll-hint');
+            } else {
+                sugestoesList.removeAttribute('aria-describedby');
+            }
+
             // correção para Chrome (mobile): reposicionar o dropdown como `fixed` quando necessário
             try { ajustarPosicaoSugestoes(); } catch (err) { /* silencioso */ }
         }
@@ -1194,10 +1287,26 @@
             buscaInput.addEventListener('input', (e) => {
                 const q = e.target.value;
 
-                // Se o usuário não digitou nada (ou apenas espaços), garantir que as sugestões desapareçam
-                if (q.trim().length === 0) {
+                // Se o usuário digitou menos de 2 caracteres, garantir que as sugestões desapareçam
+                if (q.trim().length < 2) {
                     clearTimeout(debounceTimer);
                     fecharSugestoes();
+
+                    // acessibilidade: informar que são necessários pelo menos 2 caracteres
+                    (function () {
+                        let live = document.getElementById('sugestoes-live');
+                        if (!live) {
+                            live = document.createElement('div');
+                            live.id = 'sugestoes-live';
+                            live.setAttribute('aria-live', 'polite');
+                            live.setAttribute('aria-atomic', 'true');
+                            Object.assign(live.style, { position: 'absolute', width: '1px', height: '1px', margin: '-1px', border: '0', padding: '0', overflow: 'hidden', clip: 'rect(0 0 0 0)' });
+                            document.body.appendChild(live);
+                        }
+                        live.textContent = 'Digite 2 ou mais letras para ver sugestões';
+                        setTimeout(() => { live.textContent = ''; }, 1200);
+                    })();
+
                     return;
                 }
 
