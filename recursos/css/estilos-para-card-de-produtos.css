@@ -89,7 +89,7 @@
 .produto-nome {
     font-size: 20px;
     font-weight: 400;
-    color: #2685e3;
+    color: #3f3f3f;
     margin-bottom: 6px;
     line-height: 1.4;
     text-transform: capitalize;
@@ -193,7 +193,7 @@
     }
 
     .produto-nome {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .produto-preco-atual {

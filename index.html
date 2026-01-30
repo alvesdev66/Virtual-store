@@ -301,7 +301,7 @@
             0%,
             49% {
                 opacity: 1;
-                
+
 
             }
 
@@ -846,8 +846,9 @@
         </div>
         <div class="criptografia-desc">
             <p style="text-align: center; font-size: 12px; max-width: 300px; margin: 20px auto; color: #878787;">
-                <i class="ri-key-fill"
-                    style="font-size: 16px; color: #568fd9; margin-right: 8px; vertical-align: middle;"></i>
+                <i class="ri-shield-check-line"
+                    style="font-size: 16px; color: #228d14; margin-right: 2px; vertical-align: middle;"></i>
+                </i>
                 Seus dados estão protegidos com criptografia de ponta a ponta dentro do site. <a href="#">Saiba mais</a>
             </p>
         </div>
@@ -1176,7 +1177,7 @@
                     indiceAtual: 0,
                     velocidadeDigitacao: 60,
                     velocidadeApagamento: 30,
-                    pausaAposFrase: 2500,
+                    pausaAposFrase: 4500,
                     pausaAntesDeContinuar: 400,
                     estaDigitando: true
                 };
@@ -2074,9 +2075,10 @@
             menu.className = 'categoria-dropdown-menu';
 
             // Adicionar "Todos os produtos" como primeira opção
-            let menuItems = '<a href="#" class="categoria-dropdown-item" data-categoria="todos">TODOS OS PRODUTOS</a>';
+            let menuItems = '<a href="./produtos/" class="categoria-dropdown-item" data-categoria="todos">TODOS OS PRODUTOS</a>';
             menuItems += categorias.map(categoria => {
-                return `<a href="#" class="categoria-dropdown-item" data-categoria="${categoria.toLowerCase()}">${categoria}</a>`;
+                const slug = encodeURIComponent(categoria.toLowerCase());
+                return `<a href="./produtos/?q=${slug}" class="categoria-dropdown-item" data-categoria="${categoria.toLowerCase()}">${categoria}</a>`;
             }).join('');
 
             menu.innerHTML = menuItems;
@@ -2162,18 +2164,23 @@
             // Fechar dropdown ao clicar em um item
             menu.querySelectorAll('.categoria-dropdown-item').forEach(item => {
                 item.addEventListener('click', (e) => {
-                    e.preventDefault();
                     const categoria = item.getAttribute('data-categoria');
 
                     // Fechar dropdown
                     menu.classList.remove('active');
                     button.classList.remove('active');
 
+                    // Se o clique for modificado (Ctrl/Cmd/Shift/Scroll-click), permitir o comportamento padrão (abrir em nova aba)
+                    const modified = e.ctrlKey || e.metaKey || e.shiftKey || (e.button && e.button !== 0);
+                    if (modified) return; // não prevenir o comportamento padrão
+
+                    e.preventDefault();
+
                     // Redirecionar para searchpage com a categoria como parâmetro
                     if (categoria && categoria !== 'todos') {
                         const encodedCategory = encodeURIComponent(categoria);
                         window.location.href = `./produtos/?q=${encodedCategory}`;
-                    } else if (categoria === 'todos') {
+                    } else {
                         // Se clicou em "TODOS OS PRODUTOS", redirecionar sem filtro
                         window.location.href = `./produtos/`;
                     }
@@ -2237,6 +2244,13 @@
                     a.href = '#';
                     a.className = 'submenu-link';
                     a.textContent = categoria;
+
+                    // Adicionar evento para redirecionar quando clicado
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        realizarBusca(categoria);
+                    });
+
                     li.appendChild(a);
                     submenu.appendChild(li);
                 });
