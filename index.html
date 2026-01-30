@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juvele - Moda Feminina</title>
+    <title>JUVELE - Moda Feminina</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
     <link rel="stylesheet" href="./recursos/css/Barra-de-pesquisa.css">
     <link rel="stylesheet" href="./recursos/css/estilos-para-card-de-produtos.css">
@@ -283,6 +283,39 @@
             .nav-item-seguranca {
                 display: none;
             }
+        }
+
+        /* Cursor piscante para animação typewriter */
+        .cursor-blink {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            margin-left: 4px;
+            background-color: #f15797;
+            vertical-align: middle;
+            animation: blink-cursor 0.7s infinite;
+        }
+
+        @keyframes blink-cursor {
+
+            0%,
+            49% {
+                opacity: 1;
+                
+
+            }
+
+            50%,
+            100% {
+                opacity: 0;
+
+            }
+        }
+
+        /* Animação de digitação suave */
+        #text-animator h2 {
+            letter-spacing: 0.05em;
+            min-height: 1.5em;
         }
 
         /* Hashtags rotativas 🔁 */
@@ -620,34 +653,6 @@
             color: #406cee;
         }
 
-        /* Badge de Pesquisa */
-        .pesquisa-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background-color: #3d77dc;
-            color: #ffffff;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            animation: slideDown 0.3s ease;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .pesquisa-badge i {
-            font-size: 14px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .pesquisa-badge i:hover {
-            transform: scale(1.2);
-        }
-
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -668,14 +673,6 @@
                 gap: 8px;
                 top: 110px;
                 padding: 8px 15px;
-            }
-
-            .pesquisa-badge {
-                width: 100%;
-                justify-content: space-between;
-                margin-left: 0;
-                flex-shrink: 1;
-                font-size: 11px;
             }
 
             .categoria-badge {
@@ -862,8 +859,7 @@
             style="text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; padding: 0 20px;">
             <h2
                 style="font-size: clamp(13px, 4vw, 14px); font-weight: 400; color: #3f3f3f; margin: 0; letter-spacing: 0.5px; max-width: 100%; word-wrap: break-word;">
-                {{ textoAnimado }}<span class="cursor-blink"
-                    style="animation: blink 0.7s infinite; display: inline-block; width: 2px; height: 1em; background-color: #e22a8c; margin-left: 4px; vertical-align: middle; "></span>
+                {{ textoAnimado }}<span v-if="estaDigitando" class="cursor-blink"></span>
             </h2>
         </div>
 
@@ -1119,6 +1115,32 @@
             return metadadosPromise;
         }
 
+        // Função otimizada para carregar APENAS categorias (uma única vez)
+        let categoriasCache = null;
+        let categoriasPromise = null;
+        async function carregarCategorias() {
+            if (categoriasCache) return categoriasCache;
+            if (categoriasPromise) return categoriasPromise;
+
+            categoriasPromise = (async () => {
+                try {
+                    const metadados = await fetchMetadados();
+                    const categoriasObj = metadados.find(item => item.elemento === 'categorias');
+                    const categorias = (categoriasObj && categoriasObj.categorias) || [];
+                    categoriasCache = categorias;
+                    return categorias;
+                } catch (error) {
+                    console.error('Erro ao carregar categorias:', error);
+                    categoriasCache = [];
+                    return [];
+                } finally {
+                    categoriasPromise = null;
+                }
+            })();
+
+            return categoriasPromise;
+        }
+
         createApp({
             data() {
                 return {
@@ -1133,6 +1155,7 @@
                 }
             },
             mounted() {
+                // Carregar configurações da logo do metadados.json
                 fetchMetadados()
                     .then(data => {
                         const logoConfig = data.find(item => item.arquivo === 'logotipo-zoom');
@@ -1140,78 +1163,53 @@
                             this.zoom = logoConfig.zoom;
                         }
                     })
-                    .catch(error => console.error('Erro ao carregar personalização:', error));
+                    .catch(error => console.error('Erro ao carregar configuração da logo:', error));
             }
         }).mount('#logo-app');
 
-        // Carregar quantidade de produtos do metadados.json
-        fetchMetadados()
-            .then(data => {
-                const produtosConfig = data.find(item => item.arquivo === 'produtos.json');
-                if (produtosConfig && produtosConfig['quantidade-produtos']) {
-                    document.getElementById('quantidade-produtos').textContent = produtosConfig['quantidade-produtos'];
-                }
-            })
-            .catch(error => console.error('Erro ao carregar quantidade de produtos:', error));
-
-        // ===== VUE APP PARA ANIMAÇÃO DE TEXTO COM TYPEWRITER ===== 
+        // ===== VUE APP PARA ANIMAÇÃO DE TEXTO COM TYPEWRITER =====
         const textAnimatorApp = Vue.createApp({
             data() {
                 return {
                     textoAnimado: '',
-                    frases: [],
+                    frases: ['Bem vinda à Juvele!', 'Moda feminina de qualidade', 'Compra 100% segura'],
                     indiceAtual: 0,
-                    digitando: true,
                     velocidadeDigitacao: 60,
-                    velocidadeApagacao: 30,
-                    pausaAntesdeApagar: 13000,
-                    pausaAntesDeTrocar: 500
+                    velocidadeApagamento: 30,
+                    pausaAposFrase: 2500,
+                    pausaAntesDeContinuar: 400,
+                    estaDigitando: true
                 };
             },
             methods: {
                 async animar() {
-                    // Aguardar até que as frases sejam carregadas
-                    while (this.frases.length === 0) {
-                        await this.delay(100);
-                    }
-
                     while (true) {
-                        const fraseAtual = this.frases[this.indiceAtual];
+                        const frase = this.frases[this.indiceAtual];
+                        this.estaDigitando = true;
 
-                        // DIGITANDO
-                        this.digitando = true;
-                        for (let i = 0; i <= fraseAtual.length; i++) {
-                            this.textoAnimado = fraseAtual.substring(0, i);
-
-                            // Velocidade variável (mais rápido no início, mais lento no final)
-                            const progresso = i / fraseAtual.length;
-                            const velocidade = this.velocidadeDigitacao + (progresso * 20);
-
-                            await this.delay(velocidade);
+                        // Digitar com variação natural
+                        for (let i = 0; i <= frase.length; i++) {
+                            this.textoAnimado = frase.substring(0, i);
+                            // Variação aleatória de velocidade (humano)
+                            const variacaao = Math.random() * 40 - 20;
+                            await this.delay(this.velocidadeDigitacao + variacaao);
                         }
 
-                        // PAUSA ANTES DE APAGAR
-                        await this.delay(this.pausaAntesdeApagar);
+                        // Pausa com cursor piscando
+                        this.estaDigitando = false;
+                        await this.delay(this.pausaAposFrase);
 
-                        // APAGANDO
-                        this.digitando = false;
-                        for (let i = fraseAtual.length; i >= 0; i--) {
-                            this.textoAnimado = fraseAtual.substring(0, i);
-
-                            // Velocidade variável no apagamento (alternando - às vezes mais rápido, às vezes mais lento)
-                            const progresso = i / fraseAtual.length;
-                            const velocidadeBase = this.velocidadeApagacao;
-                            const variacao = Math.random() > 0.6 ? 15 : -10; // 60% chance de ser mais rápido
-                            const velocidade = Math.max(15, velocidadeBase + variacao);
-
-                            await this.delay(velocidade);
+                        // Apagar com velocidade diferente
+                        this.estaDigitando = true;
+                        for (let i = frase.length; i >= 0; i--) {
+                            this.textoAnimado = frase.substring(0, i);
+                            const variacaao = Math.random() * 20 - 10;
+                            await this.delay(this.velocidadeApagamento + variacaao);
                         }
 
-                        // PAUSA ANTES DE TROCAR DE FRASE
-                        await this.delay(this.pausaAntesDeTrocar);
-
-                        // PRÓXIMA FRASE
+                        // Próxima frase
                         this.indiceAtual = (this.indiceAtual + 1) % this.frases.length;
+                        await this.delay(this.pausaAntesDeContinuar);
                     }
                 },
 
@@ -1224,20 +1222,14 @@
                 // Carregar frases do metadados.json
                 fetchMetadados()
                     .then(data => {
-                        const typewriterConfig = data.find(item => item.elemento === 'typewriter-text-home');
-                        if (typewriterConfig && typewriterConfig.frases) {
-                            // Adicionar aspas às frases
-                            this.frases = typewriterConfig.frases.map(frase => `"${frase}"`);
-                            // Iniciar a animação
-                            this.animar();
+                        const textConfig = data.find(item => item.elemento === 'typewriter-text-home');
+                        if (textConfig && textConfig.frases && Array.isArray(textConfig.frases)) {
+                            this.frases = textConfig.frases;
                         }
+                        this.animar();
                     })
                     .catch(error => {
-                        console.error('Erro ao carregar frases do metadados.json:', error);
-                        // Fallback para frases padrão
-                        this.frases = [
-
-                        ];
+                        console.error('Erro ao carregar configuração de texto animado:', error);
                         this.animar();
                     });
             }
@@ -1245,14 +1237,7 @@
 
         textAnimatorApp.mount('#text-animator');
 
-        // Selecionar elementos
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-        const overlay = document.querySelector('.overlay');
-        const navItems = document.querySelectorAll('.nav-item');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        /* ===== Autocomplete de sugestões (data/x89(N2).json) ===== */
+        // Selecionar elementos da busca
         const buscaInput = document.getElementById('busca-input');
         const sugestoesList = document.getElementById('sugestoes-list');
         let sugestoesCache = null;
@@ -1279,14 +1264,9 @@
             buscaInput.addEventListener('input', updateBuscaClear);
             buscaInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                    if (buscaInput.value) {
-                        buscaInput.value = '';
-                        updateBuscaClear();
-                        fecharSugestoes();
-                        buscaInput.dispatchEvent(new Event('input', { bubbles: true }));
-                    } else {
-                        buscaInput.blur();
-                    }
+                    buscaInput.value = '';
+                    updateBuscaClear();
+                    fecharSugestoes();
                 }
             });
         }
@@ -1318,6 +1298,13 @@
                 return [];
             }
         }
+
+        // Selecionar elementos do menu
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const overlay = document.querySelector('.overlay');
+        const navItems = document.querySelectorAll('.nav-item');
+        const navLinks = document.querySelectorAll('.nav-link');
 
         function debounce(fn, wait = 150) {
             clearTimeout(debounceTimer);
@@ -2066,19 +2053,8 @@
                 return;
             }
 
-            // Carregar categorias do metadados.json
-            let categorias = [];
-            try {
-                const metadados = await fetchMetadados();
-                const categoriasObj = metadados.find(item => item.elemento === 'categorias');
-                if (categoriasObj && categoriasObj.categorias) {
-                    categorias = categoriasObj.categorias;
-                }
-            } catch (error) {
-                console.error('Erro ao carregar categorias do metadados.json:', error);
-                // Fallback para categorias padrão
-                categorias = ['BLAZER', 'BLUSA', 'BODY', 'BOLSA', 'CALÇADO', 'CINTO', 'SHORTS', 'SAIA', 'VESTIDO'];
-            }
+            // Carregar categorias (otimizado com cache)
+            const categorias = await carregarCategorias();
 
             // Criar contêiner do dropdown
             const container = document.createElement('div');
@@ -2187,8 +2163,20 @@
             menu.querySelectorAll('.categoria-dropdown-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
+                    const categoria = item.getAttribute('data-categoria');
+
+                    // Fechar dropdown
                     menu.classList.remove('active');
                     button.classList.remove('active');
+
+                    // Redirecionar para searchpage com a categoria como parâmetro
+                    if (categoria && categoria !== 'todos') {
+                        const encodedCategory = encodeURIComponent(categoria);
+                        window.location.href = `./produtos/?q=${encodedCategory}`;
+                    } else if (categoria === 'todos') {
+                        // Se clicou em "TODOS OS PRODUTOS", redirecionar sem filtro
+                        window.location.href = `./produtos/`;
+                    }
                 });
             });
 
@@ -2209,203 +2197,31 @@
             logManager.log('✓ Categorias em dropdown geradas dinamicamente');
         }
 
-        // ===== SISTEMA DE BUSCA DE PRODUTOS =====
-        let termoBuscaAtual = null;
-        let produtosCarregadosOriginal = []; // Armazena os produtos originais
-
-        // Filtra produtos pelo termo de busca
-        function filtrarProdutosPorBusca(termo) {
-            if (!termo || termo.trim().length < 1) {
-                return produtosCarregadosOriginal;
-            }
-
-            const termoNormalizado = normalizarTermo(termo);
-
-            // Quebrar o termo em palavras individuais
-            const palavrasBusca = termo.trim().toLowerCase().split(/\s+/).filter(p => p.length > 0);
-
-            // Mapear palavras normalizadas
-            const palavrasNormalizadas = palavrasBusca.map(p => normalizarTermo(p));
-
-            // Filtrar e calcular pontuação de relevância
-            const resultados = produtosCarregadosOriginal.map(produto => {
-                const nomeNorm = normalizarTermo(produto.nome);
-                const descricaoNorm = normalizarTermo(produto.descricao || '');
-                const categoriaNorm = normalizarTermo(produto.categoria || '');
-
-                // Contar quantas palavras da busca correspondem
-                let pontuacao = 0;
-                let detalhesMatches = [];
-
-                for (const palavra of palavrasNormalizadas) {
-                    let matches = 0;
-
-                    // Buscar correspondência exata em nome (maior peso)
-                    if (nomeNorm.includes(palavra)) {
-                        matches += 3;
-                        if (!detalhesMatches.includes('nome')) detalhesMatches.push('nome');
-                    }
-
-                    // Buscar correspondência em descrição (peso médio)
-                    if (descricaoNorm.includes(palavra)) {
-                        matches += 2;
-                        if (!detalhesMatches.includes('descrição')) detalhesMatches.push('descrição');
-                    }
-
-                    // Buscar correspondência em categoria (peso menor)
-                    if (categoriaNorm.includes(palavra)) {
-                        matches += 1;
-                        if (!detalhesMatches.includes('categoria')) detalhesMatches.push('categoria');
-                    }
-
-                    pontuacao += matches;
-                }
-
-                // Retornar apenas produtos com pontuação > 0
-                return {
-                    produto,
-                    pontuacao,
-                    numPalavrasCorrespondentes: detalhesMatches.length
-                };
-            }).filter(item => item.pontuacao > 0);
-
-            // Ordenar por:
-            // 1. Número de palavras que correspondem (decrescente)
-            // 2. Pontuação total (decrescente)
-            // 3. Nome do produto (alfabético)
-            resultados.sort((a, b) => {
-                if (b.numPalavrasCorrespondentes !== a.numPalavrasCorrespondentes) {
-                    return b.numPalavrasCorrespondentes - a.numPalavrasCorrespondentes;
-                }
-                if (b.pontuacao !== a.pontuacao) {
-                    return b.pontuacao - a.pontuacao;
-                }
-                return a.produto.nome.localeCompare(b.produto.nome, 'pt-BR');
-            });
-
-            // Retornar apenas os produtos (sem metadados)
-            return resultados.map(item => item.produto);
-        }
-
-        // Realiza a busca e renderiza resultados
+        // Realiza a busca e redireciona para a página de pesquisa
         async function realizarBusca(termo) {
             const searchInput = termo || buscaInput.value.trim();
 
             if (!searchInput || searchInput.length < 1) {
-                // Se vazio, recarregar todos os produtos
-                termoBuscaAtual = null;
-                produtosCarregados = [...produtosCarregadosOriginal];
-                produtosExibidos = 0;
-                removerBadgePesquisa();
-                carregarMaisProdutos();
+                // Se vazio, não fazer nada
                 return;
             }
 
-            termoBuscaAtual = searchInput;
             fecharSugestoes();
 
-            // Filtrar produtos
-            const produtosFiltrados = filtrarProdutosPorBusca(searchInput);
-
-            // Renderizar resultados
-            if (produtosFiltrados.length === 0) {
-                document.getElementById('produtosContainer').innerHTML = '';
-                document.getElementById('produtosErro').hidden = false;
-                document.getElementById('produtosErro').textContent = `Nenhum produto encontrado para "${searchInput}"`;
-            } else {
-                document.getElementById('produtosContainer').innerHTML = '';
-                document.getElementById('produtosErro').hidden = true;
-
-                // Armazenar produtos filtrados para "Ver mais"
-                produtosCarregados = produtosFiltrados;
-                produtosExibidos = 0;
-
-                // Renderizar os primeiros 24 produtos de busca
-                carregarMaisProdutos();
-            }
-
-            // Exibir badge de pesquisa
-            exibirBadgePesquisa(searchInput);
-
-            // Fazer scroll até a seção de produtos (similar ao dropdown de categorias)
-            await fazerScrollParaProdutos();
-
-            logManager.log(`🔍 Pesquisa realizada: "${searchInput}" - ${produtosFiltrados.length} produtos encontrados`);
-        }
-
-        // Função para exibir badge de pesquisa
-        function exibirBadgePesquisa(termo) {
-            // Remover badge anterior se existir
-            removerBadgePesquisa();
-
-            const container = document.querySelector('.categorias-container');
-            if (!container) return;
-
-            // Limitar o termo a 30 caracteres
-            const LIMITE_CARACTERES = 30;
-            const termoTruncado = termo.length > LIMITE_CARACTERES
-                ? termo.substring(0, LIMITE_CARACTERES) + '...'
-                : termo;
-
-            const badge = document.createElement('div');
-            badge.className = 'pesquisa-badge';
-            badge.id = 'pesquisa-badge-ativo';
-            badge.innerHTML = `
-                <i class="ri-search-line"></i>
-                <strong>${termoTruncado}</strong>
-                <i class="ri-close-line" style="margin-left: auto; cursor: pointer;"></i>
-            `;
-
-            // Adicionar evento para fechar o badge
-            badge.querySelector('.ri-close-line').addEventListener('click', (e) => {
-                e.preventDefault();
-                limparBusca();
-            });
-
-            container.appendChild(badge);
-        }
-
-        // Função para remover badge de pesquisa
-        function removerBadgePesquisa() {
-            const badge = document.getElementById('pesquisa-badge-ativo');
-            if (badge) {
-                badge.remove();
-            }
-        }
-
-        // Função para fazer scroll até a seção de produtos
-        async function fazerScrollParaProdutos() {
-            const textAnimator = document.getElementById('text-animator');
-            if (!textAnimator) return;
-
-            await new Promise((resolve) => {
-                textAnimator.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                setTimeout(resolve, 600);
-            });
-        }
-
-        // Limpar busca
-        function limparBusca() {
-            buscaInput.value = '';
-            termoBuscaAtual = null;
-            removerBadgePesquisa();
-            updateBuscaClear();
-            produtosExibidos = 0;
-            // Gerar novos produtos ao limpar a busca
-            carregarProdutos();
+            // Redirecionar para searchpage com o termo de busca como parâmetro
+            const encodedSearch = encodeURIComponent(searchInput.replace(/\s+/g, '-'));
+            window.location.href = `./produtos/?q=${encodedSearch}`;
         }
 
         // Carregar Submenu de Produtos da Nav
         async function carregarSubmenuProdutos() {
             try {
-                const metadados = await fetchMetadados();
-                const categoriasObj = metadados.find(item => item.elemento === 'categorias');
+                const categorias = await carregarCategorias();
 
-                if (!categoriasObj || !categoriasObj.categorias) {
+                if (!categorias || categorias.length === 0) {
                     return;
                 }
 
-                const categorias = categoriasObj.categorias;
                 const submenu = document.querySelector('.submenu');
 
                 if (!submenu) return;
@@ -2503,7 +2319,6 @@
                 let produtos = await response.json();
                 produtos = embaralharArray(produtos);
                 produtosCarregados = produtos;
-                produtosCarregadosOriginal = [...produtos]; // Armazenar cópia original
                 logManager.log(`✓ ${produtosCarregados.length} produtos carregados do JSON`);
 
                 // Exibe apenas os primeiros 24 produtos

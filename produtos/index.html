@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUVELE - Moda Feminina</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+    <link rel="stylesheet" href="../recursos/css/Barra-de-pesquisa.css">
+    <link rel="stylesheet" href="../recursos/css/estilos-para-card-de-produtos.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f5f5;
+            transition: overflow 0.3s ease;
+            margin-top: 140px;
+            padding-top: 0;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Navbar */
+        nav {
+            background-color: #e22a8c;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 60px;
+        }
+
+        .logo {
+            font-size: 16px;
+            color: #eb3a75;
+            margin-left: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Menu Principal */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 5px;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+
+        /* Submenu de Produtos */
+        .submenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            list-style: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 220px;
+            margin-top: 10px;
+            animation: slideDown 0.3s ease;
+            max-height: 284px;
+            overflow-y: auto;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .submenu-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .submenu-item:last-child {
+            border-bottom: none;
+        }
+
+        .submenu-link {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        /* Ícone de submenu */
+        .dropdown-icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            display: inline-block;
+            transform-origin: center;
+        }
+
+        .nav-item.active .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Ícones de carrinho e usuário */
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-icon {
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        /* Toggle Mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 23px;
+            height: 2.3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: all 0.1s ease;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-container {
+                height: 50px;
+                padding: 0 15px;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(8px, 8px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(2px, -2px);
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 52px;
+                flex-direction: column;
+                background-color: #fff;
+                width: 100%;
+                text-align: center;
+                transition: 0.1s;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                gap: 0;
+                padding: 2px 0;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-item {
+                width: 100%;
+            }
+
+            .nav-link {
+                color: #373737;
+                display: block;
+                font-weight: 400;
+                padding: 15px 20px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            /* Submenu Mobile */
+            .submenu {
+                position: static;
+                display: none;
+                box-shadow: none;
+                background-color: #f9f9f9;
+                border-radius: 0;
+                min-width: unset;
+                margin-top: 0;
+                animation: none;
+                max-height: 277px;
+                overflow-y: auto;
+            }
+
+            .submenu-item {
+                padding: 10px 20px;
+                padding-left: 40px;
+            }
+
+            .submenu-link {
+                color: #606060;
+            }
+
+            .submenu.active {
+                display: block;
+            }
+        }
+
+        /* Ocultar Contato em telas médias (menu desktop apertado) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .nav-item-contato {
+                display: none;
+            }
+        }
+
+        /* Ocultar Segurança em telas pequenas (menu desktop mais apertado) */
+        @media (min-width: 769px) and (max-width: 900px) {
+            .nav-item-seguranca {
+                display: none;
+            }
+        }
+
+        /* Botão WhatsApp Fixo */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 20;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .whatsapp-button:hover {
+            background-color: #20ba5f;
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .whatsapp-button i {
+            font-size: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-button {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .whatsapp-button i {
+                font-size: 19px;
+            }
+        }
+
+        /* Botão Ver Mais */
+        .btn-ver-mais {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 40px;
+            background-color: #33333300;
+            color: #3d77dc;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ver-mais:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .btn-ver-mais {
+                padding: 10px 30px;
+                font-size: 16px;
+                margin: 20px auto;
+            }
+        }
+
+        /* Estilos do Footer */
+        footer {
+            background-color: #ffffff00;
+            color: #333;
+            padding: 80px 20px 0;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            min-height: auto;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 60px;
+            width: 100%;
+            padding: 0 0 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .footer-section p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: auto;
+            padding: 30px 20px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 10px;
+            color: #999;
+            width: 100%;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: transparent;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            color: #666;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        /* Estilos para Categorias Dropdown */
+        .categorias-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
+            animation: fadeIn 0.6s ease-in-out;
+            position: sticky;
+            top: 120px;
+            z-index: 19;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: #ffffff18;
+            backdrop-filter: blur(12px);
+        }
+
+        .categoria-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .categoria-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #2a2a2a;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            white-space: nowrap;
+            background-color: #eaeaeabb;
+        }
+
+
+
+        .categoria-badge i {
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .categoria-badge.active i {
+            transform: rotate(180deg);
+        }
+
+        .categoria-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            margin-top: 8px;
+            z-index: 1000;
+            animation: slideDown 0.2s ease;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .categoria-dropdown-menu.active {
+            display: block;
+        }
+
+        .categoria-dropdown-item {
+            display: block;
+            padding: 12px 16px;
+            color: #2a2a2a;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .categoria-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .categoria-dropdown-item:hover {
+            background-color: #f5f5f5;
+            color: #406cee;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsivo para telas muito pequenas (landscape pequeno e portrait) */
+        @media (max-width: 380px) {
+            .categorias-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                top: 110px;
+                padding: 8px 15px;
+            }
+
+            .categoria-badge {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            footer {
+                padding: 50px 15px 0px;
+                margin-top: 5px;
+            }
+
+            .categorias-container {
+                gap: 5px;
+                padding: 0 15px;
+                top: 110px;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            .categoria-badge {
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+
+            .categoria-dropdown-menu {
+                min-width: 180px;
+            }
+
+            .footer-container {
+                gap: 40px;
+                grid-template-columns: 1fr;
+            }
+
+            .footer-section h3 {
+                font-size: 12px;
+            }
+
+            .footer-section a,
+            .footer-section p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!--SIM, EU SEI... PARECE ESTRANHO COLOCAR O VJUES
+    PARA CARREGAR AQUI. PORÉM ESSA FOI UMA BOA PRÁTICA
+    PARA EVITAR ATRASOS NO CARREGAMENTO DO FRAMEWORK 
+    MAIS IMPORTANTE DO SITE. E EVITA QUE APAREÇA "{{TEXTO ANIMADO}} "-->
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <header>
+        <!-- BARRA DE NAVEGAÇÃO -->
+        <nav>
+            <div class="nav-container">
+                <!-- Logo -->
+                <a href="#" class="logo">
+                    <img src="../recursos/identidade/logotipo.png" alt="logotipo da empresa/loja" style="width: 100px;">
+                </a>
+
+                <!-- Menu Principal -->
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link">Início <i class="ri-home-smile-line"></i></a>
+                    </li>
+
+                    <!-- Menu com Submenu -->
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            Produtos <i class="ri-arrow-down-s-line dropdown-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link">Vestidos</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Blusas</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Calças</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Sapatos</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="#" class="submenu-link"> Acessórios</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Promoções <i class="ri-fire-line"></i></a>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Meus pedidos <i class="ri-menu-search-line"></i></a>
+                    </li>
+
+                    <li class="nav-item nav-item-seguranca">
+
+                        <a href="#" class="nav-link">Segurança <i class="ri-shield-check-line"></i></a>
+                    </li>
+
+                    <li class="nav-item nav-item-contato">
+                        <a href="#" class="nav-link">Contato <i class="ri-phone-line"></i></a>
+                    </li>
+                </ul>
+
+                <!-- Hambúrguer Menu -->
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+            </div>
+        </nav>
+        <!-- BARRA DE PESQUISA -->
+        <div class="barra-de-pesquisa-totalidade">
+            <div class="caixa-de-pesquisa" role="search">
+                <span class="icon-pesquisa"><i class="ri-search-line"></i></span>
+                <input id="busca-input" type="search" placeholder="Estou buscando..." autocomplete="off"
+                    aria-autocomplete="list" aria-controls="sugestoes-list" aria-expanded="false" role="combobox">
+
+                <!-- Botão limpar (visível apenas quando há texto) -->
+                <button type="button" id="busca-clear" class="clear-btn" aria-label="Limpar pesquisa"
+                    title="Limpar pesquisa" hidden>
+                    <i class="ri-close-line" aria-hidden="true"></i>
+                </button>
+
+                <!-- Sugestões dinâmicas (preenchidas via JS a partir de data/x89(N2).json) -->
+                <ul id="sugestoes-list" class="sugestoes-list" role="listbox" aria-label="Sugestões de pesquisa" hidden>
+                </ul>
+            </div>
+        </div>
+        <div class="title">
+            <h1 style="font-weight: 400; color: #4478da; text-align: center;">Página de pesquisa</h1>
+        </div>
+        <div class="voltar-home" style="margin: 0 auto; text-align: center; margin-bottom: -15px; margin-top: 14px;">
+            <a href="../index.html" style="font-size: 13px;">Voltar para tela inicial</a>
+        </div>
+        <div class="criptografia-desc">
+            <p style="text-align: center; font-size: 12px; max-width: 300px; margin: 20px auto; color: #878787;">
+                <i class="ri-shield-check-line"
+                    style="font-size: 16px; color: #228d14; margin-right: 2px; vertical-align: middle;"></i>
+                </i>
+                Seus dados estão protegidos com criptografia de ponta a ponta dentro do site. <a href="#">Saiba mais</a>
+            </p>
+        </div>
+    </header>
+    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+    <!-- SEÇÃO DE PRODUTOS -->
+    <main>
+        <section class="produtos-destaque">
+            <div id="produtosContainer" class="produtos-container">
+                <!-- Cards serão gerados aqui pelo JavaScript -->
+            </div>
+            <div id="produtosErro" hidden style="text-align: center; padding: 40px; color: #999;">
+                Não foi possível carregar os produtos. Tente novamente.
+            </div>
+        </section>
+    </main>
+
+    <!-- Script -->
+
+    <script>
+        // ===== SISTEMA DE CACHE DE IMAGENS (10 DIAS) =====
+        class ImagemCacheManager {
+            constructor() {
+                this.dbName = 'JuveleCacheDB';
+                this.storeName = 'imagensProdutos';
+                this.metadataKey = 'juvele_cache_metadata';
+                this.DURACAO_CACHE = 10 * 24 * 60 * 60 * 1000; // 10 dias em ms
+                this.db = null;
+                this.inicializado = false;
+                this.init();
+            }
+
+            async init() {
+                try {
+                    this.db = await this.abrirBanco();
+                    this.inicializado = true;
+                    this.limparCacheExpirado();
+                } catch (err) {
+                    console.warn('⚠️ IndexedDB não disponível, usando fallback:', err);
+                    this.inicializado = false;
+                }
+            }
+
+            abrirBanco() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, 1);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(this.storeName)) {
+                            const store = db.createObjectStore(this.storeName, { keyPath: 'url' });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                    };
+                });
+            }
+
+            async obterDoCache(url) {
+                if (!this.inicializado || !this.db) return null;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readonly');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.get(url);
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            const resultado = request.result;
+
+                            if (resultado) {
+                                // Verificar se expirou
+                                const agora = Date.now();
+                                if (agora - resultado.timestamp < this.DURACAO_CACHE) {
+                                    resolve(resultado.blob);
+                                } else {
+                                    // Expirou, deletar do cache
+                                    this.deletarDoCache(url);
+                                    resolve(null);
+                                }
+                            } else {
+                                resolve(null);
+                            }
+                        };
+                    });
+                } catch (err) {
+                    console.warn('❌ Erro ao ler cache:', err);
+                    return null;
+                }
+            }
+
+            async salvarNoCache(url, blob) {
+                if (!this.inicializado || !this.db) return false;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readwrite');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.put({
+                            url: url,
+                            blob: blob,
+                            timestamp: Date.now()
+                        });
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => resolve(true);
+                    });
+                } catch (err) {
+                    console.warn('❌ Erro ao salvar no cache:', err);
+                    return false;
+                }
+            }
+
+            async deletarDoCache(url) {
+                if (!this.inicializado || !this.db) return;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readwrite');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.delete(url);
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => resolve();
+                    });
+                } catch (err) {
+                    console.warn('❌ Erro ao deletar cache:', err);
+                }
+            }
+
+            async obterImagemEmCache(url) {
+                const blob = await this.obterDoCache(url);
+                if (blob) {
+                    try {
+                        return URL.createObjectURL(blob);
+                    } catch (err) {
+                        console.warn('❌ Erro ao criar object URL:', err);
+                        return null;
+                    }
+                }
+                return null;
+            }
+
+            async baixarECachear(url) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+
+                    const blob = await response.blob();
+                    await this.salvarNoCache(url, blob);
+
+                    return URL.createObjectURL(blob);
+                } catch (err) {
+                    console.error('❌ Erro ao baixar imagem:', err);
+                    return null;
+                }
+            }
+
+            async obterImagemComCache(url) {
+                // Tentar obter do cache primeiro
+                const urlEmCache = await this.obterImagemEmCache(url);
+                if (urlEmCache) {
+                    console.log('✅ Usando imagem do cache:', url);
+                    return urlEmCache;
+                }
+
+                // Se não estiver em cache, baixar e cachear
+                console.log('📥 Baixando imagem para cache:', url);
+                return await this.baixarECachear(url);
+            }
+
+            async limparCacheExpirado() {
+                if (!this.inicializado || !this.db) return;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readwrite');
+                        const store = transaction.objectStore(this.storeName);
+                        const index = store.index('timestamp');
+                        const range = IDBKeyRange.upperBound(Date.now() - this.DURACAO_CACHE);
+                        const request = index.openCursor(range);
+
+                        let deletados = 0;
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = (event) => {
+                            const cursor = event.target.result;
+                            if (cursor) {
+                                cursor.delete();
+                                deletados++;
+                                cursor.continue();
+                            } else {
+                                if (deletados > 0) {
+                                    console.log(`🧹 Limpeza de cache: ${deletados} imagens expiradas removidas`);
+                                }
+                                resolve();
+                            }
+                        };
+                    });
+                } catch (err) {
+                    console.warn('⚠️ Erro ao limpar cache expirado:', err);
+                }
+            }
+
+            async obterTamanhoCacheEmMB() {
+                if (!this.inicializado || !this.db) return 0;
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = this.db.transaction([this.storeName], 'readonly');
+                        const store = transaction.objectStore(this.storeName);
+                        const request = store.getAll();
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            let tamanho = 0;
+                            request.result.forEach(item => {
+                                if (item.blob) {
+                                    tamanho += item.blob.size;
+                                }
+                            });
+                            resolve((tamanho / (1024 * 1024)).toFixed(2));
+                        };
+                    });
+                } catch (err) {
+                    console.warn('⚠️ Erro ao calcular tamanho do cache:', err);
+                    return 0;
+                }
+            }
+        }
+
+        // Instanciar o gerenciador de cache
+        const imagemCache = new ImagemCacheManager();
+
+        // Vue app para controlar skeleton e zoom da logo
+        const { createApp } = Vue;
+
+        // Single cached fetch para evitar múltiplas solicitações ao metadados.json
+        let metadadosCache = null;
+        let metadadosPromise = null;
+        function fetchMetadados() {
+            if (metadadosCache) return Promise.resolve(metadadosCache);
+            if (metadadosPromise) return metadadosPromise;
+            metadadosPromise = fetch('../data/metadados.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar metadados.json');
+                    return response.json();
+                })
+                .then(json => {
+                    metadadosCache = json;
+                    return json;
+                })
+                .catch(err => {
+                    metadadosPromise = null;
+                    throw err;
+                });
+            return metadadosPromise;
+        }
+
+        createApp({
+            data() {
+                return {
+                    loaded: false,
+                    src: './recursos/identidade/logo.jpg',
+                    zoom: 1
+                };
+            },
+            methods: {
+                onLoad() {
+                    this.loaded = true;
+                }
+            },
+            mounted() {
+                fetchMetadados()
+                    .then(data => {
+                        const logoConfig = data.find(item => item.arquivo === 'logotipo-zoom');
+                        if (logoConfig && logoConfig.zoom) {
+                            this.zoom = logoConfig.zoom;
+                        }
+                    })
+                    .catch(error => console.error('Erro ao carregar personalização:', error));
+            }
+        }).mount('#logo-app');
+
+        // Carregar quantidade de produtos do metadados.json
+        fetchMetadados()
+            .then(data => {
+                const produtosConfig = data.find(item => item.arquivo === 'produtos.json');
+                if (produtosConfig && produtosConfig['quantidade-produtos']) {
+                    document.getElementById('quantidade-produtos').textContent = produtosConfig['quantidade-produtos'];
+                }
+            })
+            .catch(error => console.error('Erro ao carregar quantidade de produtos:', error));
+
+        // ===== VUE APP PARA ANIMAÇÃO DE TEXTO COM TYPEWRITER ===== 
+        const textAnimatorApp = Vue.createApp({
+            data() {
+                return {
+                    textoAnimado: '',
+                    frases: [],
+                    indiceAtual: 0,
+                    digitando: true,
+                    velocidadeDigitacao: 60,
+                    velocidadeApagacao: 30,
+                    pausaAntesdeApagar: 13000,
+                    pausaAntesDeTrocar: 500
+                };
+            },
+            methods: {
+                async animar() {
+                    // Aguardar até que as frases sejam carregadas
+                    while (this.frases.length === 0) {
+                        await this.delay(100);
+                    }
+
+                    while (true) {
+                        const fraseAtual = this.frases[this.indiceAtual];
+
+                        // DIGITANDO
+                        this.digitando = true;
+                        for (let i = 0; i <= fraseAtual.length; i++) {
+                            this.textoAnimado = fraseAtual.substring(0, i);
+
+                            // Velocidade variável (mais rápido no início, mais lento no final)
+                            const progresso = i / fraseAtual.length;
+                            const velocidade = this.velocidadeDigitacao + (progresso * 20);
+
+                            await this.delay(velocidade);
+                        }
+
+                        // PAUSA ANTES DE APAGAR
+                        await this.delay(this.pausaAntesdeApagar);
+
+                        // APAGANDO
+                        this.digitando = false;
+                        for (let i = fraseAtual.length; i >= 0; i--) {
+                            this.textoAnimado = fraseAtual.substring(0, i);
+
+                            // Velocidade variável no apagamento (alternando - às vezes mais rápido, às vezes mais lento)
+                            const progresso = i / fraseAtual.length;
+                            const velocidadeBase = this.velocidadeApagacao;
+                            const variacao = Math.random() > 0.6 ? 15 : -10; // 60% chance de ser mais rápido
+                            const velocidade = Math.max(15, velocidadeBase + variacao);
+
+                            await this.delay(velocidade);
+                        }
+
+                        // PAUSA ANTES DE TROCAR DE FRASE
+                        await this.delay(this.pausaAntesDeTrocar);
+
+                        // PRÓXIMA FRASE
+                        this.indiceAtual = (this.indiceAtual + 1) % this.frases.length;
+                    }
+                },
+
+                delay(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
+            },
+
+            mounted() {
+                // Carregar frases do metadados.json
+                fetchMetadados()
+                    .then(data => {
+                        const typewriterConfig = data.find(item => item.elemento === 'typewriter-text-home');
+                        if (typewriterConfig && typewriterConfig.frases) {
+                            // Adicionar aspas às frases
+                            this.frases = typewriterConfig.frases.map(frase => `"${frase}"`);
+                            // Iniciar a animação
+                            this.animar();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar frases do metadados.json:', error);
+                        // Fallback para frases padrão
+                        this.frases = [
+
+                        ];
+                        this.animar();
+                    });
+            }
+        });
+
+        textAnimatorApp.mount('#text-animator');
+
+        // Selecionar elementos
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const overlay = document.querySelector('.overlay');
+        const navItems = document.querySelectorAll('.nav-item');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        /* ===== Autocomplete de sugestões (data/x89(N2).json) ===== */
+        const buscaInput = document.getElementById('busca-input');
+        const sugestoesList = document.getElementById('sugestoes-list');
+        let sugestoesCache = null;
+        let debounceTimer = null;
+        let activeSuggestionIndex = -1;
+
+        // Botão limpar (x) - comportamento JS: visibilidade e ação
+        const buscaClear = document.getElementById('busca-clear');
+
+        function updateBuscaClear() {
+            if (!buscaInput || !buscaClear) return;
+            if (buscaInput.value.trim().length > 0) {
+                buscaClear.classList.add('visible');
+                buscaClear.removeAttribute('hidden');
+                buscaClear.setAttribute('aria-hidden', 'false');
+            } else {
+                buscaClear.classList.remove('visible');
+                buscaClear.setAttribute('hidden', '');
+                buscaClear.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        if (buscaInput) {
+            buscaInput.addEventListener('input', updateBuscaClear);
+            buscaInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (buscaInput.value) {
+                        buscaInput.value = '';
+                        updateBuscaClear();
+                        fecharSugestoes();
+                        buscaInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    } else {
+                        buscaInput.blur();
+                    }
+                }
+            });
+        }
+
+        if (buscaClear) {
+            buscaClear.addEventListener('click', (e) => {
+                buscaInput.value = '';
+                updateBuscaClear();
+                fecharSugestoes();
+                buscaInput.focus();
+                buscaInput.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+        }
+
+        // Garantir estado inicial após DOM carregar
+        document.addEventListener('DOMContentLoaded', () => setTimeout(updateBuscaClear, 0));
+
+        async function carregarSugestoes() {
+            if (sugestoesCache) return sugestoesCache;
+            try {
+                const res = await fetch('../data/x89(N2).json', { cache: 'no-store' });
+                const json = await res.json();
+                const lista = Array.isArray(json) && json[0] && Array.isArray(json[0].suggests) ? json[0].suggests : [];
+                sugestoesCache = lista;
+                return lista;
+            } catch (err) {
+                console.warn('Não foi possível carregar sugestões:', err);
+                sugestoesCache = [];
+                return [];
+            }
+        }
+
+        function debounce(fn, wait = 150) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fn, wait);
+        }
+
+        // Normalização e suporte heurístico a singular/plural (PT-BR) + tolerância pequena (Levenshtein)
+        // Objetivo: quando usuário digitar "vestido" ou "vestidos" (ou formas parciais), sugerir ambos.
+        function normalizarTermo(t) {
+            return String(t || '')
+                .normalize('NFD')               // decompor acentos
+                .replace(/\p{M}/gu, '')        // remover marcas diacríticas
+                .toLowerCase()
+                .trim();
+        }
+
+        function gerarVariantesSimples(token) {
+            const norm = normalizarTermo(token);
+            const variants = new Set([norm]);
+
+            // heurísticas comuns para PT-BR
+            if (/ões$|ães$|ãos$/.test(norm)) variants.add(norm.replace(/(ões|ães|ãos)$/, 'ao')); // ão <-> ões/ães/ãos
+            if (/ns$/.test(norm)) variants.add(norm.replace(/ns$/, 'm'));                         // homem <- homens
+            if (/zes$/.test(norm)) variants.add(norm.replace(/zes$/, 'z'));                       // luz <- luzes
+
+            // remoção/adição simples de 's' (casas <-> casa)
+            if (norm.endsWith('s') && norm.length > 3) variants.add(norm.slice(0, -1));
+            if (!norm.endsWith('s')) variants.add(norm + 's');
+
+            return Array.from(variants);
+        }
+
+        // cache leve para as variantes normalizadas das sugestões (evita recomputar em cada tecla)
+        const _sugestoesNormCache = new Map();
+
+        function filtrar(q, lista) {
+            if (!q) return [];
+            const raw = String(q).trim();
+            // exigir pelo menos 2 caracteres para começar a sugerir
+            if (raw.length < 2) return [];
+
+            const qNorm = normalizarTermo(raw);
+            const queryVariants = gerarVariantesSimples(raw);
+
+            const scored = [];
+
+            for (const s of lista) {
+                const sugVars = _sugestoesNormCache.get(s) || (function () {
+                    const v = gerarVariantesSimples(s);
+                    _sugestoesNormCache.set(s, v);
+                    return v;
+                })();
+
+                let score = 0;
+                let bestPos = Infinity;
+
+                // Exact match (highest priority)
+                for (const sv of sugVars) {
+                    if (sv === qNorm) {
+                        score += 200;
+                        bestPos = 0;
+                        break;
+                    }
+                }
+
+                // Prefix matches (start of suggestion)
+                if (score === 0) {
+                    for (const sv of sugVars) {
+                        if (sv.startsWith(qNorm)) {
+                            score += 120;
+                            bestPos = 0;
+                            break;
+                        }
+                    }
+                }
+
+                // Match at start of any word inside the suggestion (e.g. query='bolsa' matches 'Bolsa Baguete' and 'Mini Bolsa')
+                if (score === 0) {
+                    for (const sv of sugVars) {
+                        const parts = sv.split(/\s+/);
+                        for (const p of parts) {
+                            if (p.startsWith(qNorm)) {
+                                score += 100;
+                                bestPos = Math.min(bestPos, sv.indexOf(p));
+                                break;
+                            }
+                        }
+                        if (score >= 100) break;
+                    }
+                }
+
+                // Substring matches
+                if (score === 0) {
+                    for (const sv of sugVars) {
+                        const idx = sv.indexOf(qNorm);
+                        if (idx !== -1) {
+                            // earlier occurrences are better
+                            score += Math.max(40, 60 - Math.min(40, idx));
+                            bestPos = Math.min(bestPos, idx);
+                            break;
+                        }
+                    }
+                }
+
+
+                if (score > 0) {
+                    // small preference for shorter labels and for suggestions where the first word equals the query
+                    const firstWord = normalizarTermo(String(s).split(/\s+/)[0] || '');
+                    if (firstWord === qNorm) score += 8;
+                    score += Math.max(0, 6 - String(s).length / 8);
+
+                    scored.push({ s, score, pos: bestPos, len: String(s).length });
+                }
+            }
+
+            // ordenar por score desc, posição asc (earlier match), comprimento asc, texto
+            scored.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                if (a.pos !== b.pos) return a.pos - b.pos;
+                if (a.len !== b.len) return a.len - b.len;
+                return a.s.localeCompare(b.s, 'pt-BR');
+            });
+
+            // retornar strings únicas, permitir um pool maior (rolável) mas visualmente mostramos 4 — limitar pool a 12
+            const out = [];
+            for (const item of scored) {
+                if (out.indexOf(item.s) === -1) out.push(item.s);
+                if (out.length >= 12) break;
+            }
+            return out;
+        }
+
+        function renderSugestoes(items, query) {
+            activeSuggestionIndex = -1;
+            if (!sugestoesList) return;
+
+            // Se não houver itens, fechar o dropdown (requisição do usuário)
+            if (!items || items.length === 0) {
+                fecharSugestoes();
+
+                // Atualização acessível: anunciar brevemente que não houve resultados
+                (function () {
+                    let live = document.getElementById('sugestoes-live');
+                    if (!live) {
+                        live = document.createElement('div');
+                        live.id = 'sugestoes-live';
+                        live.setAttribute('aria-live', 'polite');
+                        live.setAttribute('aria-atomic', 'true');
+                        Object.assign(live.style, { position: 'absolute', width: '1px', height: '1px', margin: '-1px', border: '0', padding: '0', overflow: 'hidden', clip: 'rect(0 0 0 0)' });
+                        document.body.appendChild(live);
+                    }
+                    live.textContent = query ? `Nenhuma sugestão encontrada para ${query}` : '';
+                    // limpar a mensagem após 2s para não poluir o DOM do leitor de tela
+                    setTimeout(() => { live.textContent = ''; }, 2000);
+                })();
+
+                return;
+            }
+
+            sugestoesList.innerHTML = items.map((s, idx) => `
+                <li id="sug-${idx}" role="option" data-index="${idx}" class="sugestao-item" tabindex="-1" aria-selected="false">
+                    <span class="sug-text">${s}</span>
+                    <i class="ri-arrow-left-up-line sugestao-icon" aria-hidden="true"></i>
+                </li>
+            `).join('');
+            sugestoesList.hidden = false;
+            buscaInput.setAttribute('aria-expanded', 'true');
+
+            // quando há mais resultados que a janela visível, avisar leitores de tela e expor dica de scroll
+            const visibleCount = (window.matchMedia && window.matchMedia('(max-width:520px)').matches) ? 4 : 6;
+            if (items.length > visibleCount) {
+                let hint = document.getElementById('sugestoes-scroll-hint');
+                const text = `Mostrando ${visibleCount} de ${items.length} resultados. Deslize para ver mais.`;
+                if (!hint) {
+                    hint = document.createElement('div');
+                    hint.id = 'sugestoes-scroll-hint';
+                    hint.setAttribute('aria-hidden', 'false');
+                    Object.assign(hint.style, { position: 'absolute', width: '1px', height: '1px', margin: '-1px', border: '0', padding: '0', overflow: 'hidden', clip: 'rect(0 0 0 0)' });
+                    hint.textContent = text;
+                    // inserir como irmão do dropdown para manter o escopo visual separado
+                    sugestoesList.parentElement && sugestoesList.parentElement.appendChild(hint);
+                } else {
+                    hint.textContent = text;
+                }
+                sugestoesList.setAttribute('aria-describedby', 'sugestoes-scroll-hint');
+            } else {
+                sugestoesList.removeAttribute('aria-describedby');
+            }
+
+            // correção para Chrome (mobile): reposicionar o dropdown como `fixed` quando necessário
+            try { ajustarPosicaoSugestoes(); } catch (err) { /* silencioso */ }
+        }
+
+        function fecharSugestoes() {
+            if (!sugestoesList) return;
+            sugestoesList.hidden = true;
+            buscaInput.setAttribute('aria-expanded', 'false');
+            activeSuggestionIndex = -1;
+            buscaInput.removeAttribute('aria-activedescendant');
+        }
+
+        function selecionarSugestao(idx) {
+            const item = sugestoesList && sugestoesList.querySelector(`[data-index="${idx}"]`);
+            if (!item) return;
+            const valor = item.textContent.trim();
+            buscaInput.value = valor;
+            fecharSugestoes();
+            buscaInput.focus();
+            // Realizar busca automaticamente ao selecionar sugestão
+            realizarBusca(valor);
+            // disparar evento customizado (hook para lógica de busca existente)
+            try { window.dispatchEvent(new CustomEvent('sugestao:selecionada', { detail: { query: valor } })); } catch (e) { console.log('sugestao selecionada', valor); }
+        }
+
+        function atualizarAtivo(novoIndex) {
+            const items = Array.from(sugestoesList.querySelectorAll('.sugestao-item'));
+            if (!items.length) return;
+            items.forEach((it, i) => {
+                const sel = i === novoIndex;
+                it.setAttribute('aria-selected', sel ? 'true' : 'false');
+            });
+            const ativo = items[novoIndex];
+            if (ativo) {
+                buscaInput.setAttribute('aria-activedescendant', ativo.id);
+                ativo.scrollIntoView({ block: 'nearest' });
+            } else {
+                buscaInput.removeAttribute('aria-activedescendant');
+            }
+            activeSuggestionIndex = novoIndex;
+        }
+
+        if (buscaInput) {
+            buscaInput.addEventListener('input', (e) => {
+                const q = e.target.value;
+
+                // Se o usuário digitou menos de 2 caracteres, garantir que as sugestões desapareçam
+                if (q.trim().length < 2) {
+                    clearTimeout(debounceTimer);
+                    fecharSugestoes();
+
+                    // acessibilidade: informar que são necessários pelo menos 2 caracteres
+                    (function () {
+                        let live = document.getElementById('sugestoes-live');
+                        if (!live) {
+                            live = document.createElement('div');
+                            live.id = 'sugestoes-live';
+                            live.setAttribute('aria-live', 'polite');
+                            live.setAttribute('aria-atomic', 'true');
+                            Object.assign(live.style, { position: 'absolute', width: '1px', height: '1px', margin: '-1px', border: '0', padding: '0', overflow: 'hidden', clip: 'rect(0 0 0 0)' });
+                            document.body.appendChild(live);
+                        }
+                        live.textContent = 'Digite 2 ou mais letras para ver sugestões';
+                        setTimeout(() => { live.textContent = ''; }, 1200);
+                    })();
+
+                    return;
+                }
+
+                debounce(async () => {
+                    const lista = await carregarSugestoes();
+                    const filtradas = filtrar(q, lista);
+                    renderSugestoes(filtradas, q);
+                }, 120);
+            });
+
+            buscaInput.addEventListener('keydown', (e) => {
+                const items = sugestoesList && Array.from(sugestoesList.querySelectorAll('.sugestao-item')) || [];
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const next = (activeSuggestionIndex + 1) >= items.length ? 0 : activeSuggestionIndex + 1;
+                    atualizarAtivo(next);
+                    return;
+                }
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prev = (activeSuggestionIndex - 1) < 0 ? (items.length - 1) : (activeSuggestionIndex - 1);
+                    atualizarAtivo(prev);
+                    return;
+                }
+                if (e.key === 'Enter') {
+                    if (activeSuggestionIndex >= 0) {
+                        e.preventDefault();
+                        selecionarSugestao(activeSuggestionIndex);
+                    } else {
+                        // Se não houver sugestão selecionada, realizar busca com o texto atual
+                        e.preventDefault();
+                        realizarBusca();
+                    }
+                    return;
+                }
+                if (e.key === 'Escape') {
+                    fecharSugestoes();
+                    return;
+                }
+            });
+
+            // Clique em sugestão
+            sugestoesList && sugestoesList.addEventListener('click', (e) => {
+                const item = e.target.closest('.sugestao-item');
+                if (!item) return;
+                const idx = Number(item.getAttribute('data-index'));
+                selecionarSugestao(idx);
+            });
+
+            // Fechar quando clicar fora
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.caixa-de-pesquisa')) {
+                    fecharSugestoes();
+                }
+            });
+
+            // prefetch leve ao focar (UX rápido)
+            buscaInput.addEventListener('focus', () => { carregarSugestoes().catch(() => { }); try { ajustarPosicaoSugestoes(); } catch (e) { } });
+
+            /*
+             * Ajusta posicionamento do dropdown de sugestões — workaround para glitches do Chrome
+             * - Em navegadores problemáticos (Chrome mobile) posiciona como fixed e recalcula
+             * - Em outros navegadores mantém comportamento CSS (absolute dentro do input)
+             */
+            function ajustarPosicaoSugestoes() {
+                if (!sugestoesList) return;
+                // só agir quando o dropdown estiver visível
+                if (sugestoesList.hidden) return;
+
+                const isMobile = window.matchMedia && window.matchMedia('(max-width:520px)').matches;
+                const isChromeMobile = /Chrome\//.test(navigator.userAgent) && /Android|Mobile/.test(navigator.userAgent);
+
+                // Se estivermos em Chrome no mobile, usar fixed para escapar de clipping por ancestrais com transform/overflow
+                if (isMobile && isChromeMobile) {
+                    const container = buscaInput.closest('.caixa-de-pesquisa') || buscaInput.parentElement;
+                    const crect = container.getBoundingClientRect();
+
+                    /* horizontal offset usado pelo CSS quando o dropdown é absolute dentro do container */
+                    const horizOffset = 12; // deve coincidir com .sugestoes-list { left: 12px } in CSS
+
+                    const left = Math.round(crect.left + horizOffset);
+                    const width = Math.round(Math.max(120, crect.width - horizOffset * 2));
+                    const top = Math.round(crect.bottom + 8);
+
+                    sugestoesList.style.position = 'fixed';
+                    sugestoesList.style.left = left + 'px';
+                    sugestoesList.style.top = top + 'px';
+                    sugestoesList.style.width = width + 'px';
+                    sugestoesList.style.right = 'auto';
+                    sugestoesList.style.maxHeight = '45vh';
+                    sugestoesList.style.zIndex = 99999;
+                    sugestoesList.style.touchAction = 'manipulation';
+                    sugestoesList.style.WebkitOverflowScrolling = 'touch';
+                    sugestoesList.setAttribute('data-fixed', 'true');
+
+                    // Vincular reposicionamento enquanto estiver aberto
+                    if (!window._sug_pos_bound) {
+                        window.addEventListener('resize', ajustarPosicaoSugestoes);
+                        window.addEventListener('orientationchange', ajustarPosicaoSugestoes);
+                        window.addEventListener('scroll', ajustarPosicaoSugestoes, true);
+                        window._sug_pos_bound = true;
+                    }
+                    return;
+                }
+
+                // Reset para comportamento padrão (desktop / outros navegadores)
+                sugestoesList.style.position = '';
+                sugestoesList.style.left = '';
+                sugestoesList.style.top = '';
+                sugestoesList.style.width = '';
+                sugestoesList.removeAttribute('data-fixed');
+                sugestoesList.style.right = '';
+                sugestoesList.style.maxHeight = '';
+                sugestoesList.style.zIndex = '';
+                sugestoesList.style.touchAction = '';
+                sugestoesList.style.WebkitOverflowScrolling = '';
+            }
+        }
+
+        // Listener para ícone de pesquisa
+        const iconPesquisa = document.querySelector('.icon-pesquisa');
+        if (iconPesquisa) {
+            iconPesquisa.addEventListener('click', (e) => {
+                e.preventDefault();
+                realizarBusca();
+            });
+        }
+
+        // Toggle Menu Mobile
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+
+            // Fechar submenu quando o menu for fechado
+            if (!navMenu.classList.contains('active')) {
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    const submenu = item.querySelector('.submenu');
+                    if (submenu) {
+                        submenu.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+        // Abrir/fechar submenu ao clicar
+        navItems.forEach(item => {
+            const link = item.querySelector('.nav-link');
+            const submenu = item.querySelector('.submenu');
+
+            if (submenu) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    // Fechar outros submenus
+                    navItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                            const otherSubmenu = otherItem.querySelector('.submenu');
+                            if (otherSubmenu) {
+                                otherSubmenu.classList.remove('active');
+                            }
+                        }
+                    });
+
+                    // Toggle do submenu atual
+                    item.classList.toggle('active');
+                    submenu.classList.toggle('active');
+
+                    // Ao abrir o submenu, garantir que ele comece pelo topo e que o primeiro link seja acessível
+                    if (submenu.classList.contains('active')) {
+                        // Garantir que a rolagem ocorra após o CSS aplicar o display
+                        requestAnimationFrame(() => {
+                            submenu.scrollTop = 0;
+                            const primeiro = submenu.querySelector('.submenu-link, .submenu-item');
+                            if (primeiro && typeof primeiro.focus === 'function') {
+                                try { primeiro.focus({ preventScroll: true }); } catch (err) { primeiro.focus(); }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        // Fechar menu ao clicar em um link sem submenu
+        navLinks.forEach(link => {
+            const parentItem = link.closest('.nav-item');
+            if (parentItem && !parentItem.querySelector('.submenu')) {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            }
+        });
+
+        // Fechar ao clicar em item do submenu
+        document.querySelectorAll('.submenu-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    const submenu = item.querySelector('.submenu');
+                    if (submenu) submenu.classList.remove('active');
+                });
+            });
+        });
+
+        // Fechar menu ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('nav')) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    const submenu = item.querySelector('.submenu');
+                    if (submenu) submenu.classList.remove('active');
+                });
+            }
+        });
+
+        // Fechar ao clicar no overlay
+        overlay.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                const submenu = item.querySelector('.submenu');
+                if (submenu) submenu.classList.remove('active');
+            });
+        });
+
+        // Remover overlay quando o layout não for mais mobile (menu hambúrguer desaparece)
+        function hideOverlayIfDesktop() {
+            if (window.innerWidth > 768) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    const submenu = item.querySelector('.submenu');
+                    if (submenu) submenu.classList.remove('active');
+                });
+            }
+        }
+
+        // Verifica ao redimensionar e ao carregar a página
+        window.addEventListener('resize', hideOverlayIfDesktop);
+        window.addEventListener('load', hideOverlayIfDesktop);
+
+        // Fecha submenu 'Produtos' ao rolar a página em telas maiores
+        let _scrollTimeout;
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth > 768) {
+                // evita execução excessiva durante o scroll (debounce simples)
+                clearTimeout(_scrollTimeout);
+                _scrollTimeout = setTimeout(() => {
+                    navItems.forEach(item => {
+                        const submenu = item.querySelector('.submenu');
+                        if (submenu) submenu.classList.remove('active');
+                        item.classList.remove('active');
+                    });
+                }, 100);
+            }
+        });
+        // Rotação de hashtags: sobe a atual e entra a próxima de baixo ✨
+        (function () {
+            const hashtagsLista = ['#ElasVestemJuvele', '#Promoções🔥', '#ModaFeminina', '#Compra100%Segura']; // personalize aqui
+            const container = document.querySelector('.hashtags-container');
+            if (!container) return;
+
+            const spans = Array.from(container.querySelectorAll('.hashtag'));
+            if (spans.length < 2) return;
+
+            // Inicializa texto
+            spans[0].textContent = hashtagsLista[0];
+            spans[1].textContent = hashtagsLista[1 % hashtagsLista.length];
+            spans[0].classList.add('active');
+            let visible = 0; // índice do span atualmente visível (0 ou 1)
+            let currentIndex = 0;
+            const intervalo = 4000; // tempo entre trocas (ms)
+            const duracaoAnim = 300; // deve corresponder ao transition do CSS
+            let animating = false;
+
+            function rotate() {
+                if (animating) return; // previne sobreposição de animações
+                animating = true;
+
+                const nextHashtagIndex = (currentIndex + 1) % hashtagsLista.length;
+                const outgoing = spans[visible];
+                const incoming = spans[1 - visible];
+
+                // Preparar incoming para entrar de baixo
+                incoming.textContent = hashtagsLista[nextHashtagIndex];
+                incoming.classList.remove('slide-in', 'slide-up', 'active');
+                outgoing.classList.remove('slide-in', 'slide-up');
+                // garantir estado inicial sem estilos inline que atrapalhem
+                incoming.style.transform = 'translateY(100%)';
+                incoming.style.opacity = '0';
+
+                // Forçar reflow para garantir transição
+                void incoming.offsetWidth;
+
+                // Aplicar animação: outgoing sobe, incoming entra de baixo
+                outgoing.classList.add('slide-up');
+                outgoing.classList.remove('slide-in');
+                incoming.classList.add('slide-in', 'active');
+
+                // Depois da animação, limpar classes/estilos do elemento que saiu
+                setTimeout(() => {
+                    outgoing.classList.remove('slide-up', 'active');
+                    outgoing.classList.remove('slide-in');
+                    // limpar estilos inline usados como fallback
+                    outgoing.style.transform = '';
+                    outgoing.style.opacity = '';
+
+                    // incoming permanece visível
+                    incoming.classList.remove('slide-in');
+                    incoming.classList.add('active');
+                    incoming.style.transform = '';
+                    incoming.style.opacity = '';
+
+                    visible = 1 - visible;
+                    currentIndex = nextHashtagIndex;
+                    animating = false;
+                }, duracaoAnim + 20);
+            }
+
+            setInterval(rotate, intervalo);
+        })();
+
+        // ===== GERADOR DE PRODUTOS (Simplificado e Otimizado) =====
+
+        let produtosCarregados = [];
+        let produtosExibidos = 0;
+        const PRODUTOS_POR_PAGINA = 24; //Deve ser sempre um multiplo de 2, 3 e 4 para melhor UX
+
+        // Formata preço para Real brasileiro
+        function formatarPreco(preco) {
+            return parseFloat(preco).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Calcula preço com desconto
+        function calcularPrecoComDesconto(preco, desconto) {
+            if (!desconto) return preco;
+            return (parseFloat(preco) * (1 - desconto / 100)).toFixed(2);
+        }
+
+        // Renderiza os cards de produtos
+        function renderizarProdutos(produtos, isAdicional = false) {
+            const container = document.getElementById('produtosContainer');
+            const erroDiv = document.getElementById('produtosErro');
+
+            if (!produtos || produtos.length === 0) {
+                if (!isAdicional) {
+                    container.innerHTML = '';
+                    erroDiv.hidden = false;
+                }
+                return;
+            }
+
+            erroDiv.hidden = true;
+            const html = produtos.map(produto => {
+                const precoFinal = calcularPrecoComDesconto(produto.preco, produto.desconto);
+                const precoFormatado = formatarPreco(precoFinal);
+                const precoOriginal = formatarPreco(produto.preco);
+
+                const parcelamento = produto.parcelamento;
+                let textoParcelamento = '';
+                if (parcelamento) {
+                    if (parcelamento['sem-juros-ate'] > 0) {
+                        const valorParcela = (parseFloat(precoFinal) / parcelamento['sem-juros-ate']).toFixed(2);
+                        textoParcelamento = `<div class="produto-parcelamento">
+                            <span class="parcelas-count">${parcelamento['sem-juros-ate']} x</span> de R$ ${formatarPreco(valorParcela)} <span class="parcelas-info"><br class="quebra-pequena">sem juros</span>
+                        </div>`;
+                    } else if (parcelamento['parcelado-em-ate'] > 0) {
+                        const valorParcela = (parseFloat(precoFinal) / parcelamento['parcelado-em-ate']).toFixed(2);
+                        textoParcelamento = `<div class="produto-parcelamento">
+                            em até <span class="parcelas-count">${parcelamento['parcelado-em-ate']} x</span> de R$ ${formatarPreco(valorParcela)}<br class="quebra-pequena">
+                        </div>`;
+                    }
+                }
+
+                const statusHtml = !produto.disponibilidade ?
+                    '<div class="produto-status esgotado">ESGOTADO</div>' :
+                    '';
+
+                return `
+                    <div class="produto-card" data-id="${produto.id}">
+                        <div class="produto-imagem-wrapper">
+                            <img data-src="${produto.imagem}" alt="${produto.nome}" 
+                                class="produto-imagem" 
+                                loading="lazy"
+                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'%3E%3Crect fill='%23f0f0f0' width='300' height='400'/%3E%3C/svg%3E"
+                                onerror="this.src='https://via.placeholder.com/300x400?text=Produto'">
+                        </div> 
+                        <div class="produto-info">
+                            <div>
+                                <h3 class="produto-nome">${produto.nome}</h3>
+                            </div>
+                            <div>
+                                ${produto.desconto ? `<span class="desconto-badge">${produto.desconto}% OFF</span>` : ''}
+                                <div class="produto-preco-wrapper">
+                                    ${produto.desconto ? `<div class="produto-preco-original">R$ ${precoOriginal}</div>` : ''}
+                                    <span class="produto-preco-atual">R$ ${precoFormatado}</span>
+                                </div>
+                                ${textoParcelamento}
+                                ${statusHtml}
+                            </div>
+                            
+                            <button class="produto-botao" onclick="adicionarAoCarrinho(${produto.id})" 
+                                ${!produto.disponibilidade ? 'disabled' : ''}>
+                                Ver detalhes
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (isAdicional) {
+                container.innerHTML += html;
+            } else {
+                container.innerHTML = html;
+            }
+        }
+
+        // Função para carregar mais produtos
+        function carregarMaisProdutos() {
+            const inicio = produtosExibidos;
+            const fim = inicio + PRODUTOS_POR_PAGINA;
+            const novosProdutos = produtosCarregados.slice(inicio, fim);
+
+            if (novosProdutos.length === 0) {
+                return;
+            }
+
+            // Renderizar produtos imediatamente (sem esperar imagens)
+            renderizarProdutos(novosProdutos, true);
+            produtosExibidos = fim;
+
+            // Iniciar lazy loading de forma não-bloqueante (próximo ciclo do event loop)
+            setTimeout(() => {
+                iniciarLazyLoading();
+                logManager.log(`🚀 ${novosProdutos.length} produtos carregados, aguardando imagens...`);
+            }, 0);
+
+            // Atualizar botão "Ver mais"
+            atualizarBotaoVerMais();
+        }
+
+        // Atualizar botão "Ver mais"
+        function atualizarBotaoVerMais() {
+            let btnVerMais = document.getElementById('btnVerMais');
+
+            if (produtosExibidos >= produtosCarregados.length) {
+                if (btnVerMais) {
+                    btnVerMais.remove();
+                }
+                return;
+            }
+
+            if (!btnVerMais) {
+                const section = document.querySelector('.produtos-destaque');
+                btnVerMais = document.createElement('button');
+                btnVerMais.id = 'btnVerMais';
+                btnVerMais.className = 'btn-ver-mais';
+                btnVerMais.innerHTML = 'Mostrar mais <i class="ri-arrow-down-s-line"></i>';
+                btnVerMais.onclick = carregarMaisProdutos;
+                section.appendChild(btnVerMais);
+            }
+        }
+
+        // Gerar Categorias Dinamicamente
+        async function gerarCategorias() {
+            // Verificar se as categorias já existem
+            if (document.querySelector('.categoria-dropdown')) {
+                return;
+            }
+
+            // Carregar categorias do metadados.json
+            let categorias = [];
+            try {
+                const metadados = await fetchMetadados();
+                const categoriasObj = metadados.find(item => item.elemento === 'categorias');
+                if (categoriasObj && categoriasObj.categorias) {
+                    categorias = categoriasObj.categorias;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar categorias do metadados.json:', error);
+                // Fallback para categorias padrão
+                categorias = ['BLAZER', 'BLUSA', 'BODY', 'BOLSA', 'CALÇADO', 'CINTO', 'SHORTS', 'SAIA', 'VESTIDO'];
+            }
+
+            // Criar contêiner do dropdown
+            const container = document.createElement('div');
+            container.className = 'categorias-container';
+
+            // Criar dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'categoria-dropdown';
+
+            // Botão do dropdown
+            const button = document.createElement('button');
+            button.className = 'categoria-badge';
+            button.innerHTML = 'Todos os produtos <i class="ri-arrow-down-s-line"></i>';
+
+            // Menu do dropdown
+            const menu = document.createElement('div');
+            menu.className = 'categoria-dropdown-menu';
+
+            // Adicionar "Todos os produtos" como primeira opção
+            let menuItems = '<a href="#" class="categoria-dropdown-item" data-categoria="todos">TODOS OS PRODUTOS</a>';
+            menuItems += categorias.map(categoria => {
+                return `<a href="#" class="categoria-dropdown-item" data-categoria="${categoria.toLowerCase()}">${categoria}</a>`;
+            }).join('');
+
+            menu.innerHTML = menuItems;
+
+            // Montar estrutura
+            dropdown.appendChild(button);
+            dropdown.appendChild(menu);
+            container.appendChild(dropdown);
+
+            // Inserir após o texto animado
+            const textAnimator = document.getElementById('text-animator');
+            if (textAnimator) {
+                textAnimator.parentElement.insertBefore(container, textAnimator.nextElementSibling);
+            } else {
+                document.querySelector('main').insertBefore(container, document.querySelector('.produtos-destaque'));
+            }
+
+            // Adicionar funcionalidade de toggle
+            // Antes de expandir, garantir que o container esteja na sua posição "sticky" (ou alinhado ao topo)
+            // Para isso, rolamos suavemente até que a posição do elemento esteja alinhada ao valor `top` computado.
+            function ensureElementAtTopOffset(el, topOffset) {
+                return new Promise((resolve) => {
+                    const rect = el.getBoundingClientRect();
+                    const desiredTop = topOffset;
+
+                    // Se já estiver alinhado (ou acima), não precisa rolar
+                    if (rect.top <= desiredTop + 1) {
+                        resolve();
+                        return;
+                    }
+
+                    const targetScroll = window.scrollY + rect.top - desiredTop;
+
+                    const onScroll = () => {
+                        const r = el.getBoundingClientRect();
+                        if (Math.abs(r.top - desiredTop) <= 2 || Math.abs(window.scrollY - targetScroll) <= 2) {
+                            window.removeEventListener('scroll', onScroll);
+                            resolve();
+                        }
+                    };
+
+                    window.addEventListener('scroll', onScroll);
+                    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+
+                    // Fallback caso a rolagem suave demore ou não seja suportada
+                    setTimeout(() => {
+                        window.removeEventListener('scroll', onScroll);
+                        resolve();
+                    }, 900);
+                });
+            }
+
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+
+                // Recuperar top configurado via CSS (ex.: 120px / 110px em mobile)
+                const computedTop = parseFloat(getComputedStyle(container).getPropertyValue('top')) || 0;
+
+                // Se o container estiver fora da sua posição fixada (ou seja, abaixo do topo desejado), rolar primeiro
+                const rect = container.getBoundingClientRect();
+                if (rect.top > computedTop + 1) {
+                    await ensureElementAtTopOffset(container, computedTop);
+                    // Pequena pausa para garantir que a transição de posição do sticky esteja completa
+                    await new Promise(r => setTimeout(r, 80));
+                }
+
+                // Agora sim toggle do menu
+                menu.classList.toggle('active');
+                button.classList.toggle('active');
+
+                // Ao abrir, garantir que o menu mostre o começo da lista e posicione o foco no primeiro item
+                if (menu.classList.contains('active')) {
+                    setTimeout(() => {
+                        menu.scrollTop = 0;
+                        const primeiro = menu.querySelector('.categoria-dropdown-item');
+                        if (primeiro && typeof primeiro.focus === 'function') {
+                            try { primeiro.focus({ preventScroll: true }); } catch (err) { primeiro.focus(); }
+                        }
+                    }, 30); // pequeno atraso para permitir a animação/estado de exibição
+                }
+            });
+
+            // Fechar dropdown ao clicar em um item
+            menu.querySelectorAll('.categoria-dropdown-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const categoria = item.getAttribute('data-categoria');
+
+                    // Fechar dropdown
+                    menu.classList.remove('active');
+                    button.classList.remove('active');
+
+                    // Redirecionar para searchpage com a categoria como parâmetro
+                    if (categoria && categoria !== 'todos') {
+                        const encodedCategory = encodeURIComponent(categoria);
+                        window.location.href = `../produtos/?q=${encodedCategory}`;
+                    } else if (categoria === 'todos') {
+                        // Se clicou em "TODOS OS PRODUTOS", redirecionar sem filtro
+                        window.location.href = `./produtos/`;
+                    }
+                });
+            });
+
+            // Fechar dropdown ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!dropdown.contains(e.target)) {
+                    menu.classList.remove('active');
+                    button.classList.remove('active');
+                }
+            });
+
+            // Fechar dropdown ao rolar a tela
+            window.addEventListener('scroll', () => {
+                menu.classList.remove('active');
+                button.classList.remove('active');
+            }, { once: false });
+
+            logManager.log('✓ Categorias em dropdown geradas dinamicamente');
+        }
+
+        // Realiza a busca e redireciona para a página de pesquisa
+        async function realizarBusca(termo) {
+            const searchInput = termo || buscaInput.value.trim();
+
+            if (!searchInput || searchInput.length < 1) {
+                // Se vazio, não fazer nada
+                return;
+            }
+
+            fecharSugestoes();
+
+            // Redirecionar para searchpage com o termo de busca como parâmetro
+            const encodedSearch = encodeURIComponent(searchInput.replace(/\s+/g, '-'));
+            window.location.href = `../produtos/?q=${encodedSearch}`;
+        }
+
+        // Limpar busca
+        function limparBusca() {
+            buscaInput.value = '';
+            termoBuscaAtual = null;
+            updateBuscaClear();
+            produtosExibidos = 0;
+            // Gerar novos produtos ao limpar a busca
+            carregarProdutos();
+        }
+
+        // Carregar Submenu de Produtos da Nav
+        async function carregarSubmenuProdutos() {
+            try {
+                const metadados = await fetchMetadados();
+                const categoriasObj = metadados.find(item => item.elemento === 'categorias');
+
+                if (!categoriasObj || !categoriasObj.categorias) {
+                    return;
+                }
+
+                const categorias = categoriasObj.categorias;
+                const submenu = document.querySelector('.submenu');
+
+                if (!submenu) return;
+
+                // Limpar submenu existente
+                submenu.innerHTML = '';
+
+                // Adicionar categorias ao submenu
+                categorias.forEach(categoria => {
+                    const li = document.createElement('li');
+                    li.className = 'submenu-item';
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.className = 'submenu-link';
+                    a.textContent = categoria;
+                    li.appendChild(a);
+                    submenu.appendChild(li);
+                });
+
+                logManager.log('✓ Submenu de produtos carregado do metadados.json');
+            } catch (error) {
+                console.error('Erro ao carregar submenu de produtos:', error);
+            }
+        }
+
+        // Gerar Footer Dinamicamente
+        function gerarFooter() {
+            // Verificar se o footer já existe
+            if (document.querySelector('footer')) {
+                return;
+            }
+
+            const footer = document.createElement('footer');
+            footer.innerHTML = `
+            
+                <div class="footer-container">
+                    <div class="footer-section">
+                        <h3> Juvele - moda feminina</h3>
+                        <p>Qualidade, estilo e preço justo para você.</p>
+                        <div class="footer-social">
+                            <a href="https://instagram.com" target="_blank" title="Instagram"><i class="ri-instagram-line"></i></a>
+                            <a href="https://wa.me/5585988881234" target="_blank" title="WhatsApp"><i class="ri-whatsapp-line"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-section">
+                        <h3><i class="ri-shopping-bag-line"></i> Compras</h3>
+                        <ul>
+                            <li><a href="#">Carrinho</a></li>
+                            <li><a href="#">Meus Pedidos</a></li>
+                            <li><a href="#">Rastrear Pedido</a></li>
+                            <li><a href="#">Trocas e Devoluções</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h3><i class="ri-customer-service-2-line"></i> Atendimento</h3>
+                        <ul>
+                            <li><a href="#">Contato</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Políticas de Privacidade</a></li>
+                            <li><a href="#">Termos de Serviço</a></li>
+                            <li><a href="#">Segurança</a></li>
+                        </ul>
+                    </div>
+                    <p style="font-size: 12px; color: #3b3b3b;"></p>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Juvele.com.br <br> Todos os direitos reservados. | Desenvolvido com <i class="ri-heart-fill" style="color: #e22a8c;"></i> para você.</p>
+                </div>
+            `;
+
+            document.body.appendChild(footer);
+            logManager.log('✓ Footer gerado dinamicamente');
+        }
+
+
+        // Embaralha um array (Fisher-Yates)
+        function embaralharArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Carrega produtos do JSON
+        async function carregarProdutos() {
+            try {
+                logManager.log('🔄 Iniciando carregamento de produtos...');
+                const response = await fetch('../data/x89.json');
+                if (!response.ok) throw new Error('Erro ao carregar produtos');
+
+                let produtos = await response.json();
+                produtos = embaralharArray(produtos);
+                produtosCarregados = produtos;
+                logManager.log(`✓ ${produtosCarregados.length} produtos carregados do JSON`);
+
+                // Exibe apenas os primeiros 24 produtos
+                const primeiros = produtosCarregados.slice(0, PRODUTOS_POR_PAGINA);
+                renderizarProdutos(primeiros, false);
+                produtosExibidos = primeiros.length;
+                logManager.log(`🎨 ${primeiros.length} produtos renderizados no DOM`);
+
+                // Criar botão "Ver mais" se houver mais produtos
+                atualizarBotaoVerMais();
+
+                return true;
+            } catch (erro) {
+                logManager.error('❌ Erro ao carregar produtos:', erro);
+                document.getElementById('produtosErro').hidden = false;
+                return false;
+            }
+        }
+
+        // Sistema de controle de logs do console
+        const logManager = (() => {
+            let logCount = 0;
+            const MAX_LOGS = 20;
+
+            return {
+                log: (message) => {
+                    console.log(message);
+                    logCount++;
+                    if (logCount >= MAX_LOGS) {
+                        console.clear();
+                        logCount = 0;
+                    }
+                },
+                warn: (message) => {
+                    console.warn(message);
+                    logCount++;
+                    if (logCount >= MAX_LOGS) {
+                        console.clear();
+                        logCount = 0;
+                    }
+                },
+                error: (message, error) => {
+                    console.error(message, error);
+                    logCount++;
+                    if (logCount >= MAX_LOGS) {
+                        console.clear();
+                        logCount = 0;
+                    }
+                }
+            };
+        })();
+
+        // Adicionar ao carrinho
+        function adicionarAoCarrinho(produtoId) {
+            const produto = produtosCarregados.find(p => p.id === produtoId);
+            if (produto) {
+                alert(`✓ "${produto.nome}" foi adicionado ao carrinho!`);
+            }
+        }
+
+        // Rastrear tentativas de reload das imagens
+        const imagemRetryMap = new Map();
+        const MAX_RETRIES = 3;
+        const RETRY_DELAYS = [1000, 2000, 4000]; // Delays progressivos em ms
+        let totalImagensFalhadas = 0;
+        let totalImagensCarregadas = 0;
+        let reloadAgendado = false;
+
+        // Função para recarregar uma imagem com retry e CACHE
+        function tentarRecarregarImagem(img, tentativa = 0) {
+            if (tentativa >= MAX_RETRIES) {
+                logManager.warn(`Falha permanente ao carregar imagem: ${img.dataset.src || img.src}`);
+                img.style.opacity = '0.5';
+                totalImagensFalhadas++;
+                verificarSePaginaNecessitaReload();
+                return;
+            }
+
+            const delay = RETRY_DELAYS[tentativa];
+            const urlOriginal = img.dataset.src || img.src;
+
+            setTimeout(() => {
+                // ===== TENTAR RECARREGAR COM CACHE =====
+                imagemCache.obterImagemComCache(urlOriginal).then(urlParaUsar => {
+                    if (urlParaUsar) {
+                        img.src = urlParaUsar;
+                        img.style.opacity = '1';
+                        imagemRetryMap.delete(img);
+                        totalImagensCarregadas++;
+                        logManager.log(`✓ Imagem recarregada com sucesso: ${urlOriginal}`);
+                    } else {
+                        // Falha ao usar cache, tentar novamente
+                        logManager.log(`✗ Erro ao carregar imagem (tentativa ${tentativa + 1}): ${urlOriginal}`);
+                        tentarRecarregarImagem(img, tentativa + 1);
+                    }
+                }).catch(err => {
+                    logManager.log(`✗ Erro ao carregar imagem (tentativa ${tentativa + 1}): ${urlOriginal}`);
+                    tentarRecarregarImagem(img, tentativa + 1);
+                });
+            }, delay);
+        }
+
+        // Função para verificar se a página necessita recarregar
+        function verificarSePaginaNecessitaReload() {
+            if (reloadAgendado) return;
+
+            // Aguardar um pouco para dar tempo de outras imagens carregarem
+            setTimeout(() => {
+                const totalImagens = document.querySelectorAll('.produto-imagem').length;
+
+                // Se não há imagens, não faz nada
+                if (totalImagens === 0) return;
+
+                // Calcular percentual de falha
+                const percentualFalha = (totalImagensFalhadas / totalImagens) * 100;
+
+                logManager.log(`📊 Status de imagens: ${totalImagensCarregadas} carregadas, ${totalImagensFalhadas} falhadas de ${totalImagens}`);
+
+                // Se mais de 70% das imagens falharam permanentemente, recarregar a página
+                if (percentualFalha >= 70 && totalImagensFalhadas >= 3) {
+                    logManager.warn(`❌ Mais de 70% das imagens falharam permanentemente. Recarregando página em 2 segundos...`);
+                    reloadAgendado = true;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            }, 500);
+        }
+
+        // Lazy Loading de imagens com monitoramento e CACHE - Carrega apenas imagens visíveis
+        function iniciarLazyLoading() {
+            const container = document.getElementById('produtosContainer');
+            if (!container) return;
+
+            // Usar IntersectionObserver para carregar apenas imagens visíveis
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+
+                            // Se já foi processada, pular
+                            if (img.dataset.processada) return;
+                            img.dataset.processada = 'true';
+
+                            const urlOriginal = img.dataset.src || img.src;
+
+                            // ===== CARREGAR IMAGEM COM CACHE =====
+                            imagemCache.obterImagemComCache(urlOriginal).then(urlParaUsar => {
+                                if (!urlParaUsar) {
+                                    // Falha ao carregar, tentar retry
+                                    logManager.log(`⚠ Erro ao carregar imagem: ${urlOriginal}`);
+                                    img.style.opacity = '0.7';
+                                    imagemRetryMap.set(img, true);
+                                    tentarRecarregarImagem(img, 0);
+                                    return;
+                                }
+
+                                // Sucesso, aplicar a URL (pode ser do cache ou blob URL)
+                                img.src = urlParaUsar;
+                                img.removeAttribute('data-src');
+                                img.style.opacity = '1';
+                                imagemRetryMap.delete(img);
+                                totalImagensCarregadas++;
+                                logManager.log(`✅ Imagem carregada: ${urlOriginal}`);
+                            }).catch(err => {
+                                console.error('Erro ao processar imagem com cache:', err);
+                                img.style.opacity = '0.7';
+                                imagemRetryMap.set(img, true);
+                                tentarRecarregarImagem(img, 0);
+                            });
+                        }
+                    });
+                }, {
+                    rootMargin: '150px' // Começar a carregar 150px antes de ficar visível
+                });
+
+                // Observar todas as imagens atuais
+                const imagens = container.querySelectorAll('.produto-imagem');
+                imagens.forEach(img => {
+                    if (!img.dataset.processada) {
+                        imageObserver.observe(img);
+                    }
+                });
+
+                // Monitorar quando novas imagens são adicionadas
+                const mutationObserver = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach(node => {
+                                if (node.nodeType === 1) { // Element node
+                                    // Se é uma imagem
+                                    if (node.classList && node.classList.contains('produto-imagem')) {
+                                        if (!node.dataset.processada) {
+                                            imageObserver.observe(node);
+                                        }
+                                    }
+                                    // Procurar imagens dentro do nó adicionado
+                                    const novasImagens = node.querySelectorAll?.('.produto-imagem');
+                                    if (novasImagens) {
+                                        novasImagens.forEach(img => {
+                                            if (!img.dataset.processada) {
+                                                imageObserver.observe(img);
+                                                logManager.log(`🔍 Nova imagem adicionada ao observer`);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+
+                mutationObserver.observe(container, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        }
+
+        // Monitor contínuo de cards com imagens falhadas
+        function monitorarCardsComFalha() {
+            const container = document.getElementById('produtosContainer');
+            if (!container) return;
+
+            // Monitorar quando novos produtos são adicionados
+            const mutationObserverProdutos = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1 && node.classList?.contains('produto-card')) {
+                                const imagens = node.querySelectorAll('.produto-imagem');
+                                logManager.log(`🆕 ${imagens.length} novas imagens detectadas`);
+                            }
+                        });
+                    }
+                });
+            });
+
+            mutationObserverProdutos.observe(container, {
+                childList: true,
+                subtree: true
+            });
+
+            // Monitor de atributos de imagens
+            const mutationObserverAtributos = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.target.classList?.contains('produto-imagem')) {
+                        const img = mutation.target;
+
+                        // Se a imagem está invisível ou com opacidade baixa, tentar recarregar
+                        if (img.style.opacity && parseFloat(img.style.opacity) < 1) {
+                            if (!imagemRetryMap.has(img)) {
+                                tentarRecarregarImagem(img, 0);
+                            }
+                        }
+                    }
+                });
+            });
+
+            mutationObserverAtributos.observe(container, {
+                attributes: true,
+                attributeFilter: ['src', 'style'],
+                subtree: true
+            });
+
+            // Verificação periódica de imagens quebradas
+            setInterval(() => {
+                const imagens = document.querySelectorAll('.produto-imagem');
+                let imagensQuebradas = 0;
+
+                imagens.forEach(img => {
+                    // Verificar se a imagem está quebrada
+                    if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+                        imagensQuebradas++;
+                        if (!imagemRetryMap.has(img) && img.src && !img.src.includes('data:image')) {
+                            logManager.log(`🔄 Detectada imagem quebrada: ${img.src}`);
+                            imagemRetryMap.set(img, true);
+                            tentarRecarregarImagem(img, 0);
+                        }
+                    }
+                });
+
+                // Log detalhado a cada 5 segundos
+                if (imagens.length > 0) {
+                    logManager.log(`📊 Status: ${totalImagensCarregadas} ✓ | ${totalImagensFalhadas} ✗ | ${imagensQuebradas} 🔄 de ${imagens.length} total`);
+                }
+
+                // Verificação final após 15 segundos
+                if (document.readyState === 'complete') {
+                    verificarSePaginaNecessitaReload();
+                }
+            }, 5000); // Verificar a cada 5 segundos
+        }
+
+        // Controlar visibilidade do botão WhatsApp baseado no footer
+        function controlarBotaoWhatsApp() {
+            const whatsappBtn = document.querySelector('.whatsapp-button');
+            const footer = document.querySelector('footer');
+
+            if (!whatsappBtn || !footer) return;
+
+            // Usar IntersectionObserver para detectar quando o footer está próximo
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Footer está visível ou próximo, ocultar botão
+                        whatsappBtn.style.opacity = '0';
+                        whatsappBtn.style.pointerEvents = 'none';
+                        whatsappBtn.style.transition = 'opacity 0.3s ease';
+                    } else {
+                        // Footer não está visível, mostrar botão
+                        whatsappBtn.style.opacity = '1';
+                        whatsappBtn.style.pointerEvents = 'auto';
+                        whatsappBtn.style.transition = 'opacity 0.3s ease';
+                    }
+                });
+            }, {
+                rootMargin: '-160px' // Começar a ocultar -160px antes do footer ficar visível
+            });
+
+            observer.observe(footer);
+        }
+
+        // Carregar produtos ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            iniciarLazyLoading();
+            monitorarCardsComFalha();
+
+            // Carregar submenu de produtos primeiro
+            carregarSubmenuProdutos();
+
+            carregarProdutos().then(() => {
+                logManager.log('📦 Produtos carregados, iniciando lazy loading...');
+                setTimeout(() => {
+                    iniciarLazyLoading();
+                    gerarCategorias(); // Gerar categorias após carregar produtos
+                    gerarFooter(); // Gerar footer após carregar produtos
+                    controlarBotaoWhatsApp(); // Iniciar controle do botão WhatsApp
+                }, 50);
+            });
+
+            // Timeout geral: se após 20 segundos mais de 70% das imagens não carregarem, recarregar
+            setTimeout(() => {
+                if (!reloadAgendado) {
+                    const totalImagens = document.querySelectorAll('.produto-imagem').length;
+                    if (totalImagens > 0) {
+                        const percentualFalha = (totalImagensFalhadas / totalImagens) * 100;
+                        logManager.log(`📊 Verificação final: ${totalImagensCarregadas} carregadas, ${totalImagensFalhadas} falhadas de ${totalImagens}`);
+                        if (percentualFalha >= 70) {
+                            logManager.warn(`⏱ Timeout: ${percentualFalha.toFixed(0)}% de imagens falhadas. Recarregando...`);
+                            reloadAgendado = true;
+                            setTimeout(() => location.reload(), 1500);
+                        }
+                    }
+                }
+            }, 20000);
+        });
+
+        // ===== UTILITÁRIOS DE GERENCIAMENTO DE CACHE PARA O CONSOLE =====
+        // O desenvolvedor pode chamar essas funções no console para monitorar e gerenciar o cache
+        window.JuveleCacheTools = {
+            // Verificar tamanho do cache
+            async tamanho() {
+                const mb = await imagemCache.obterTamanhoCacheEmMB();
+                console.log(`📦 Tamanho total do cache: ${mb} MB`);
+                return mb;
+            },
+
+            // Limpar todo o cache manualmente
+            async limparTudo() {
+                if (!imagemCache.inicializado || !imagemCache.db) {
+                    console.warn('❌ IndexedDB não disponível');
+                    return false;
+                }
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = imagemCache.db.transaction([imagemCache.storeName], 'readwrite');
+                        const store = transaction.objectStore(imagemCache.storeName);
+                        const request = store.clear();
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            console.log('✅ Cache de imagens limpo com sucesso!');
+                            resolve(true);
+                        };
+                    });
+                } catch (err) {
+                    console.error('❌ Erro ao limpar cache:', err);
+                    return false;
+                }
+            },
+
+            // Limpar cache expirado
+            async limparExpirado() {
+                await imagemCache.limparCacheExpirado();
+                console.log('✅ Cache expirado limpo com sucesso!');
+            },
+
+            // Informações detalhadas do cache
+            async info() {
+                if (!imagemCache.inicializado || !imagemCache.db) {
+                    console.warn('❌ IndexedDB não disponível');
+                    return null;
+                }
+
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = imagemCache.db.transaction([imagemCache.storeName], 'readonly');
+                        const store = transaction.objectStore(imagemCache.storeName);
+                        const request = store.getAll();
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            const items = request.result;
+                            let tamanho = 0;
+                            const agora = Date.now();
+
+                            console.table(items.map(item => ({
+                                URL: item.url.substring(0, 50) + '...',
+                                Tamanho: ((item.blob.size / 1024).toFixed(2)) + ' KB',
+                                Armazenado: new Date(item.timestamp).toLocaleString('pt-BR'),
+                                Expira: new Date(item.timestamp + imagemCache.DURACAO_CACHE).toLocaleString('pt-BR'),
+                                Válido: agora - item.timestamp < imagemCache.DURACAO_CACHE ? '✅' : '❌'
+                            })));
+
+                            items.forEach(item => tamanho += item.blob.size);
+                            console.log(`\n📊 Total: ${items.length} imagens em cache | ${(tamanho / (1024 * 1024)).toFixed(2)} MB`);
+
+                            resolve({
+                                totalImagens: items.length,
+                                tamanhoMB: (tamanho / (1024 * 1024)).toFixed(2)
+                            });
+                        };
+                    });
+                } catch (err) {
+                    console.error('❌ Erro ao obter informações do cache:', err);
+                    return null;
+                }
+            }
+        };
+
+        // Log inicial do cache
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(async () => {
+                const tamanho = await imagemCache.obterTamanhoCacheEmMB();
+                console.log(`%c✅ Sistema de Cache Iniciado`, 'color: green; font-weight: bold;');
+                console.log(`%c📦 Cache atual: ${tamanho} MB | Duração: 10 dias`, 'color: blue;');
+                console.log(`%c💡 Use window.JuveleCacheTools.info() para ver detalhes do cache`, 'color: orange;');
+            }, 500);
+        });
+    </script>
+
+    <!-- Botão WhatsApp Fixo -->
+    <a href="https://wa.me/5585988881234" target="_blank" class="whatsapp-button" title="Fale conosco no WhatsApp">
+        <i class="ri-whatsapp-line"></i>
+    </a>
+</body>
+
+</html>
