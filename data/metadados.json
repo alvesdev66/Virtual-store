@@ -4,10 +4,6 @@
         "zoom": 1.5
     },
     {
-        "arquivo": "produtos.json",
-        "quantidade-produtos": 27
-    },
-    {
         "elemento": "typewriter-text-home",
         "frases": [
             "Ei, vem dar uma olhadinha... 👀",

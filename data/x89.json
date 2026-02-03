@@ -9,8 +9,7 @@
         "parcelamento": {
             "parcelado-em-ate": 10,
             "sem-juros-ate": 3
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "2",
@@ -22,8 +21,7 @@
         "parcelamento": {
             "parcelado-em-ate": 5,
             "sem-juros-ate": 2
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "3",
@@ -35,8 +33,7 @@
         "parcelamento": {
             "parcelado-em-ate": 3,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 3
+        }
     },
     {
         "id": "4",
@@ -48,8 +45,7 @@
         "parcelamento": {
             "parcelado-em-ate": 5,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "5",
@@ -61,8 +57,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "6",
@@ -74,8 +69,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "7",
@@ -87,8 +81,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "8",
@@ -100,8 +93,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "9",
@@ -113,8 +105,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 1
+        }
     },
     {
         "id": "10",
@@ -126,8 +117,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "11",
@@ -139,8 +129,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "12",
@@ -152,8 +141,7 @@
         "parcelamento": {
             "parcelado-em-ate": 5,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 1
+        }
     },
     {
         "id": "13",
@@ -165,8 +153,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "14",
@@ -178,8 +165,7 @@
         "parcelamento": {
             "parcelado-em-ate": 5,
             "sem-juros-ate": 2
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "15",
@@ -191,8 +177,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "16",
@@ -204,8 +189,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "17",
@@ -217,8 +201,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "18",
@@ -230,8 +213,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "19",
@@ -243,8 +225,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 1
+        }
     },
     {
         "id": "20",
@@ -256,8 +237,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 1
+        }
     },
     {
         "id": "21",
@@ -269,8 +249,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "22",
@@ -282,8 +261,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 1
+        }
     },
     {
         "id": "23",
@@ -295,8 +273,7 @@
         "parcelamento": {
             "parcelado-em-ate": 5,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "24",
@@ -308,8 +285,7 @@
         "parcelamento": {
             "parcelado-em-ate": 6,
             "sem-juros-ate": 2
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "25",
@@ -321,8 +297,7 @@
         "parcelamento": {
             "parcelado-em-ate": 7,
             "sem-juros-ate": 4
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "26",
@@ -334,8 +309,7 @@
         "parcelamento": {
             "parcelado-em-ate": 1,
             "sem-juros-ate": 0
-        },
-        "max-de-pedido": 5
+        }
     },
     {
         "id": "27",
@@ -346,8 +320,7 @@
         "disponibilidade": true,
         "parcelamento": {
             "parcelado-em-ate": 8,
-            "sem-juros-ate": 0
-        },
-        "max-de-pedido": 1
+            "sem-juuros-ate": 0
+        }
     }
 ]

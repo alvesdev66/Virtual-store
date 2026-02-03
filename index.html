@@ -444,31 +444,49 @@
             }
         }
 
-        /* Botão Ver Mais */
-        .btn-ver-mais {
-            display: block;
-            margin: 20px auto;
-            padding: 12px 40px;
-            background-color: #33333300;
+        /* Paginação */
+        .paginacao-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 40px auto;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .paginacao-btn {
+            padding: 12px 20px;
+            background-color: #f5f5f5;
             color: #3d77dc;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 60px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .btn-ver-mais:active {
-            transform: translateY(0);
+        .paginacao-btn:hover:not(:disabled) {
+            background-color: #3d77dc;
+            color: white;
+            border-color: #3d77dc;
+            transform: translateY(-2px);
         }
 
-        @media (max-width: 768px) {
-            .btn-ver-mais {
-                padding: 10px 30px;
-                font-size: 16px;
-                margin: 20px auto;
-            }
+        .paginacao-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f0f0f0;
+            border-color: #ddd;
+        }
+
+        .paginacao-info {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            min-width: 150px;
+            text-align: center;
         }
 
         /* Estilos do Footer */
@@ -721,10 +739,10 @@
 </head>
 
 <body>
-    <!--SIM, EU SEI... PARECE ESTRANHO COLOCAR O VJUES
+    <!-- SIM, EU SEI... PARECE ESTRANHO COLOCAR O VJUES
     PARA CARREGAR AQUI. PORÉM ESSA FOI UMA BOA PRÁTICA
     PARA EVITAR ATRASOS NO CARREGAMENTO DO FRAMEWORK 
-    MAIS IMPORTANTE DO SITE. E EVITA QUE APAREÇA "{{TEXTO ANIMADO}} "-->
+    MAIS IMPORTANTE DO SITE. E EVITA QUE APAREÇA "{{TEXTO ANIMADO}}" -->
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <!-- Overlay -->
@@ -745,7 +763,7 @@
                         <a href="#" class="nav-link">Início <i class="ri-home-smile-line"></i></a>
                     </li>
 
-                    <!-- Menu com Submenu -->
+                    <!--Menu com Submenu-->
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             Produtos <i class="ri-arrow-down-s-line dropdown-icon"></i>
@@ -807,7 +825,7 @@
                     <i class="ri-close-line" aria-hidden="true"></i>
                 </button>
 
-                <!-- Sugestões dinâmicas (preenchidas via JS a partir de data/x89(N2).json) -->
+                <!-- Sugestões dinâmicas (preenchidas via JS a partir de data/xrl.json) -->
                 <ul id="sugestoes-list" class="sugestoes-list" role="listbox" aria-label="Sugestões de pesquisa" hidden>
                 </ul>
             </div>
@@ -844,7 +862,7 @@
         <div class="metricas-instagram">
 
         </div>
-        <div class="criptografia-desc">
+        <div class="criptografia-desc" id="stop-point">
             <p style="text-align: center; font-size: 12px; max-width: 300px; margin: 20px auto; color: #878787;">
                 <i class="ri-shield-check-line"
                     style="font-size: 16px; color: #228d14; margin-right: 2px; vertical-align: middle;"></i>
@@ -1283,15 +1301,80 @@
         }
 
         // Garantir estado inicial após DOM carregar
-        document.addEventListener('DOMContentLoaded', () => setTimeout(updateBuscaClear, 0));
+        document.addEventListener('DOMContentLoaded', () => {
+            // atualizar o botão limpar
+            setTimeout(updateBuscaClear, 0);
+            // pré-carregar e cachear xrl.json por 3 dias
+            prefetchX89N2().catch(() => { });
+        });
 
-        async function carregarSugestoes() {
+        // Cache simples em localStorage para JSON (TTL em ms)
+        const JSONCacheManager = {
+            prefix: 'juvele_json_',
+            set(key, data, ttlMs) {
+                try {
+                    const rec = { ts: Date.now(), ttl: ttlMs, data };
+                    localStorage.setItem(this.prefix + key, JSON.stringify(rec));
+                    return true;
+                } catch (e) { console.warn('JSONCacheManager.set falhou', e); return false; }
+            },
+            get(key) {
+                try {
+                    const raw = localStorage.getItem(this.prefix + key);
+                    if (!raw) return null;
+                    const rec = JSON.parse(raw);
+                    if (!rec || !rec.ts || !('ttl' in rec)) return null;
+                    if (Date.now() > rec.ts + rec.ttl) {
+                        localStorage.removeItem(this.prefix + key);
+                        return null;
+                    }
+                    return rec.data;
+                } catch (e) { console.warn('JSONCacheManager.get falhou', e); return null; }
+            },
+            remove(key) { try { localStorage.removeItem(this.prefix + key); } catch (e) { } },
+            clearAll() { try { Object.keys(localStorage).forEach(k => { if (k.startsWith(this.prefix)) localStorage.removeItem(k); }); } catch (e) { } }
+        };
+
+        const CACHE_KEY_X89N2 = 'x89N2';
+        const CACHE_TTL_3_DIAS_MS = 3 * 24 * 60 * 60 * 1000;
+
+        async function prefetchX89N2() {
+            // se já em memória, nada a fazer
             if (sugestoesCache) return sugestoesCache;
+            // verificar cache persistente
+            const cached = JSONCacheManager.get(CACHE_KEY_X89N2);
+            if (cached) {
+                sugestoesCache = cached;
+                return cached;
+            }
             try {
-                const res = await fetch('./data/x89(N2).json', { cache: 'no-store' });
+                const res = await fetch('./data/xrl.json', { cache: 'no-store' });
                 const json = await res.json();
                 const lista = Array.isArray(json) && json[0] && Array.isArray(json[0].suggests) ? json[0].suggests : [];
                 sugestoesCache = lista;
+                JSONCacheManager.set(CACHE_KEY_X89N2, lista, CACHE_TTL_3_DIAS_MS);
+                return lista;
+            } catch (err) {
+                console.warn('Não foi possível pré-carregar sugestões:', err);
+                sugestoesCache = [];
+                return [];
+            }
+        }
+
+        async function carregarSugestoes() {
+            if (sugestoesCache) return sugestoesCache;
+            // tentar recuperar do cache persistente
+            const cached = JSONCacheManager.get(CACHE_KEY_X89N2);
+            if (cached) {
+                sugestoesCache = cached;
+                return cached;
+            }
+            try {
+                const res = await fetch('./data/xrl.json', { cache: 'no-store' });
+                const json = await res.json();
+                const lista = Array.isArray(json) && json[0] && Array.isArray(json[0].suggests) ? json[0].suggests : [];
+                sugestoesCache = lista;
+                JSONCacheManager.set(CACHE_KEY_X89N2, lista, CACHE_TTL_3_DIAS_MS);
                 return lista;
             } catch (err) {
                 console.warn('Não foi possível carregar sugestões:', err);
@@ -1760,9 +1843,13 @@
             }
         });
 
-        // Fechar ao clicar em item do submenu
+        // Fechar ao clicar em item do submenu e realizar busca pelo texto do item (formato: Primeira maiúscula)
         document.querySelectorAll('.submenu-link').forEach(link => {
-            link.addEventListener('click', () => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const valor = link.textContent.trim();
+                const formatted = formatarTermoCapitalizado(valor);
+
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
                 overlay.classList.remove('active');
@@ -1772,6 +1859,9 @@
                     const submenu = item.querySelector('.submenu');
                     if (submenu) submenu.classList.remove('active');
                 });
+
+                // Realizar busca pela categoria selecionada
+                realizarBusca(formatted);
             });
         });
 
@@ -1906,7 +1996,7 @@
         // ===== GERADOR DE PRODUTOS (Simplificado e Otimizado) =====
 
         let produtosCarregados = [];
-        let produtosExibidos = 0;
+        let paginaAtual = 1;
         const PRODUTOS_POR_PAGINA = 24; //Deve ser sempre um multiplo de 2, 3 e 4 para melhor UX
 
         // Formata preço para Real brasileiro
@@ -2001,50 +2091,97 @@
             }
         }
 
-        // Função para carregar mais produtos
-        function carregarMaisProdutos() {
-            const inicio = produtosExibidos;
-            const fim = inicio + PRODUTOS_POR_PAGINA;
-            const novosProdutos = produtosCarregados.slice(inicio, fim);
-
-            if (novosProdutos.length === 0) {
-                return;
+        // Helper: monta páginas respeitando a regra UX (merge se última página tiver < 10 itens)
+        function computePaginas() {
+            if (!produtosCarregados || produtosCarregados.length === 0) return [];
+            const pages = [];
+            for (let i = 0; i < produtosCarregados.length; i += PRODUTOS_POR_PAGINA) {
+                pages.push(produtosCarregados.slice(i, i + PRODUTOS_POR_PAGINA));
             }
-
-            // Renderizar produtos imediatamente (sem esperar imagens)
-            renderizarProdutos(novosProdutos, true);
-            produtosExibidos = fim;
-
-            // Iniciar lazy loading de forma não-bloqueante (próximo ciclo do event loop)
-            setTimeout(() => {
-                iniciarLazyLoading();
-                logManager.log(`🚀 ${novosProdutos.length} produtos carregados, aguardando imagens...`);
-            }, 0);
-
-            // Atualizar botão "Ver mais"
-            atualizarBotaoVerMais();
+            // Se a última página tiver menos de 10 itens, mesclar com a anterior para evitar página com poucos produtos
+            if (pages.length >= 2) {
+                const last = pages[pages.length - 1];
+                if (last.length > 0 && last.length < 10) {
+                    pages[pages.length - 2] = pages[pages.length - 2].concat(last);
+                    pages.pop();
+                }
+            }
+            return pages;
         }
 
-        // Atualizar botão "Ver mais"
-        function atualizarBotaoVerMais() {
-            let btnVerMais = document.getElementById('btnVerMais');
+        // Função para exibir produtos da página atual (usa computePaginas)
+        function exibirPagina(numPagina, scrollToTop = false) {
+            if (numPagina < 1) numPagina = 1;
+            const paginas = computePaginas();
+            const totalPaginas = paginas.length || 1;
+            if (numPagina > totalPaginas) numPagina = totalPaginas;
 
-            if (produtosExibidos >= produtosCarregados.length) {
-                if (btnVerMais) {
-                    btnVerMais.remove();
+            paginaAtual = numPagina;
+            const produtosDaPagina = paginas[numPagina - 1] || [];
+
+            // Renderizar produtos
+            renderizarProdutos(produtosDaPagina, false);
+
+            // Iniciar lazy loading
+            setTimeout(() => {
+                iniciarLazyLoading();
+                logManager.log(`📄 Página ${numPagina} de ${totalPaginas} exibida`);
+            }, 0);
+
+            // Atualizar paginação
+            atualizarPaginacao();
+
+            // Rolar para o ID do texto animado apenas se scrollToTop for true
+            if (scrollToTop) {
+                const textAnimator = document.getElementById('stop-point');
+                if (textAnimator) {
+                    textAnimator.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
+            }
+        }
+
+        // Atualizar controles de paginação (respeita regra: não criar página com <10 itens)
+        function atualizarPaginacao() {
+            const paginas = computePaginas();
+            const totalPaginas = paginas.length;
+            let paginacaoContainer = document.getElementById('paginacaoContainer');
+
+            if (!produtosCarregados || produtosCarregados.length === 0 || totalPaginas <= 1) {
+                if (paginacaoContainer) paginacaoContainer.remove();
                 return;
             }
 
-            if (!btnVerMais) {
+            if (!paginacaoContainer) {
                 const section = document.querySelector('.produtos-destaque');
-                btnVerMais = document.createElement('button');
-                btnVerMais.id = 'btnVerMais';
-                btnVerMais.className = 'btn-ver-mais';
-                btnVerMais.innerHTML = 'Mostrar mais <i class="ri-arrow-down-s-line"></i>';
-                btnVerMais.onclick = carregarMaisProdutos;
-                section.appendChild(btnVerMais);
+                paginacaoContainer = document.createElement('div');
+                paginacaoContainer.id = 'paginacaoContainer';
+                paginacaoContainer.className = 'paginacao-container';
+                section.appendChild(paginacaoContainer);
+            } else {
+                paginacaoContainer.innerHTML = '';
             }
+
+            // Botão Voltar
+            const btnVoltar = document.createElement('button');
+            btnVoltar.className = 'paginacao-btn';
+            btnVoltar.innerHTML = '<i class="ri-arrow-left-s-line"></i> Voltar';
+            btnVoltar.disabled = paginaAtual === 1;
+            btnVoltar.onclick = () => exibirPagina(paginaAtual - 1, true);
+            paginacaoContainer.appendChild(btnVoltar);
+
+            // Info de páginas
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'paginacao-info';
+            infoDiv.textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+            paginacaoContainer.appendChild(infoDiv);
+
+            // Botão Próximo
+            const btnProximo = document.createElement('button');
+            btnProximo.className = 'paginacao-btn';
+            btnProximo.innerHTML = 'Próximo <i class="ri-arrow-right-s-line"></i>';
+            btnProximo.disabled = paginaAtual === totalPaginas;
+            btnProximo.onclick = () => exibirPagina(paginaAtual + 1, true);
+            paginacaoContainer.appendChild(btnProximo);
         }
 
         // Gerar Categorias Dinamicamente
@@ -2077,7 +2214,8 @@
             // Adicionar "Todos os produtos" como primeira opção
             let menuItems = '<a href="./produtos/" class="categoria-dropdown-item" data-categoria="todos">TODOS OS PRODUTOS</a>';
             menuItems += categorias.map(categoria => {
-                const slug = encodeURIComponent(categoria.toLowerCase());
+                const term = formatarTermoCapitalizado(categoria.toLowerCase());
+                const slug = encodeURIComponent(term.replace(/\s+/g, '-'));
                 return `<a href="./produtos/?q=${slug}" class="categoria-dropdown-item" data-categoria="${categoria.toLowerCase()}">${categoria}</a>`;
             }).join('');
 
@@ -2204,6 +2342,13 @@
             logManager.log('✓ Categorias em dropdown geradas dinamicamente');
         }
 
+        // Formata termo: primeira letra maiúscula e o restante minúscula
+        function formatarTermoCapitalizado(s) {
+            if (!s) return s;
+            const t = String(s).trim().toLowerCase();
+            return t.charAt(0).toLocaleUpperCase('pt-BR') + t.slice(1);
+        }
+
         // Realiza a busca e redireciona para a página de pesquisa
         async function realizarBusca(termo) {
             const searchInput = termo || buscaInput.value.trim();
@@ -2215,8 +2360,9 @@
 
             fecharSugestoes();
 
-            // Redirecionar para searchpage com o termo de busca como parâmetro
-            const encodedSearch = encodeURIComponent(searchInput.replace(/\s+/g, '-'));
+            // Padronizar formatação do termo antes de redirecionar
+            const formattedTerm = formatarTermoCapitalizado(searchInput);
+            const encodedSearch = encodeURIComponent(formattedTerm.replace(/\s+/g, '-'));
             window.location.href = `./produtos/?q=${encodedSearch}`;
         }
 
@@ -2335,14 +2481,9 @@
                 produtosCarregados = produtos;
                 logManager.log(`✓ ${produtosCarregados.length} produtos carregados do JSON`);
 
-                // Exibe apenas os primeiros 24 produtos
-                const primeiros = produtosCarregados.slice(0, PRODUTOS_POR_PAGINA);
-                renderizarProdutos(primeiros, false);
-                produtosExibidos = primeiros.length;
-                logManager.log(`🎨 ${primeiros.length} produtos renderizados no DOM`);
-
-                // Criar botão "Ver mais" se houver mais produtos
-                atualizarBotaoVerMais();
+                // Exibir primeira página
+                exibirPagina(1);
+                logManager.log(`🎨 Produtos renderizados com sistema de paginação`);
 
                 return true;
             } catch (erro) {
