@@ -1306,6 +1306,8 @@
             setTimeout(updateBuscaClear, 0);
             // pré-carregar e cachear xrl.json por 3 dias
             prefetchX89N2().catch(() => { });
+            // pré-carregar e cachear x89.json por 3 dias
+            carregarX89Json().catch(() => { });
         });
 
         // Cache simples em localStorage para JSON (TTL em ms)
@@ -1381,6 +1383,98 @@
                 sugestoesCache = [];
                 return [];
             }
+        }
+
+        // ===== CACHE PARA x89.json (Dados de Produtos Complementares) com validação por LastupKey =====
+        const CACHE_KEY_X89_JSON = 'x89_json_data';
+        const CACHE_KEY_X89_LASTUP = 'x89_json_lastup_key';
+        let x89JsonCache = null;
+        let x89JsonPromise = null;
+        let lastupKeyPromise = null;
+
+        // Carregar LastupKey do servidor
+        async function carregarLastupKey() {
+            if (lastupKeyPromise) return lastupKeyPromise;
+
+            lastupKeyPromise = (async () => {
+                try {
+                    const res = await fetch('./data/LastupKey.json', { cache: 'no-store' });
+                    const data = await res.json();
+                    const key = Array.isArray(data) && data[0] && data[0].LastupKey ? data[0].LastupKey : null;
+                    console.log('🔑 LastupKey obtida do servidor:', key);
+                    return key;
+                } catch (err) {
+                    console.warn('Não foi possível carregar LastupKey:', err);
+                    return null;
+                }
+            })();
+
+            return lastupKeyPromise;
+        }
+
+        // Validar cache comparando LastupKey
+        async function validarCacheX89Json() {
+            const cachedData = JSONCacheManager.get(CACHE_KEY_X89_JSON);
+            const cachedLastupKey = JSONCacheManager.get(CACHE_KEY_X89_LASTUP);
+            const currentLastupKey = await carregarLastupKey();
+
+            // Se não houver cache, não há o que validar
+            if (!cachedData || !cachedLastupKey) {
+                console.log('📝 Nenhum cache anterior encontrado');
+                return { isValid: false, currentKey: currentLastupKey };
+            }
+
+            // Comparar LastupKeys
+            if (cachedLastupKey !== currentLastupKey) {
+                console.log(`⚠️ Cache inválido! Versão antiga: ${cachedLastupKey} | Versão atual: ${currentLastupKey}`);
+                // Invalidar cache
+                JSONCacheManager.remove(CACHE_KEY_X89_JSON);
+                JSONCacheManager.remove(CACHE_KEY_X89_LASTUP);
+                return { isValid: false, currentKey: currentLastupKey };
+            }
+
+            console.log('✅ Cache válido! LastupKey coincide:', currentLastupKey);
+            return { isValid: true, currentKey: currentLastupKey };
+        }
+
+        async function carregarX89Json() {
+            // Se já está em memória, retornar
+            if (x89JsonCache) return x89JsonCache;
+            // Se já existe uma promise em andamento, reutilizar (evita múltiplos fetchs)
+            if (x89JsonPromise) return x89JsonPromise;
+
+            // Criar nova promise para fetch
+            x89JsonPromise = (async () => {
+                try {
+                    // Validar cache existente contra LastupKey atual
+                    const validation = await validarCacheX89Json();
+
+                    // Tentar recuperar do cache persistente se válido
+                    if (validation.isValid) {
+                        const cached = JSONCacheManager.get(CACHE_KEY_X89_JSON);
+                        if (cached) {
+                            x89JsonCache = cached;
+                            console.log('📦 x89.json carregado do cache local (validado)');
+                            return cached;
+                        }
+                    }
+
+                    // Fetch novo x89.json
+                    const res = await fetch('./data/x89.json', { cache: 'no-store' });
+                    const json = await res.json();
+                    x89JsonCache = json;
+                    JSONCacheManager.set(CACHE_KEY_X89_JSON, json, CACHE_TTL_3_DIAS_MS);
+                    JSONCacheManager.set(CACHE_KEY_X89_LASTUP, validation.currentKey, CACHE_TTL_3_DIAS_MS);
+                    console.log('📥 x89.json carregado e cacheado com sucesso (LastupKey: ' + validation.currentKey + ')');
+                    return json;
+                } catch (err) {
+                    console.warn('Não foi possível carregar x89.json:', err);
+                    x89JsonCache = null;
+                    return null;
+                }
+            })();
+
+            return x89JsonPromise;
         }
 
         // Selecionar elementos do menu
@@ -2473,10 +2567,9 @@
         async function carregarProdutos() {
             try {
                 logManager.log('🔄 Iniciando carregamento de produtos...');
-                const response = await fetch('./data/x89.json');
-                if (!response.ok) throw new Error('Erro ao carregar produtos');
+                let produtos = await carregarX89Json();
+                if (!produtos) throw new Error('Erro ao carregar produtos');
 
-                let produtos = await response.json();
                 produtos = embaralharArray(produtos);
                 produtosCarregados = produtos;
                 logManager.log(`✓ ${produtosCarregados.length} produtos carregados do JSON`);
